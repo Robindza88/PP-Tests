@@ -9,57 +9,57 @@
         Step1 As TestStep:
             Description: ="Select 'Icon3'"
             Screen: =Login
-            Value: =Select('Icon3')
+            Value: =Select(Icon3)
 
         Step2 As TestStep:
             Description: ="Set 'staffid_Text_1'.Text to ""00000"""
             Screen: =Login
-            Value: =SetProperty('staffid_Text_1'.Text, "00000")
+            Value: =SetProperty(staffid_Text_1.Text, "00000")
 
         Step3 As TestStep:
             Description: ="Select 'LoginButton7'"
             Screen: =Login
-            Value: =Select('LoginButton7')
+            Value: =Select(LoginButton7)
 
         Step5 As TestStep:
             Description: ="Select 'Button1' in row 1 in 'OrderList'"
             Screen: =Home
-            Value: =Select('OrderList', 6, 'Button1')
+            Value: =Select(OrderList, 1, Button1)
 
         Step6 As TestStep:
             Description: ="Select 'ConfirmOrder_1'"
             Screen: =ViewOrder_1
-            Value: =Select('ConfirmOrder_1')
+            Value: =Select(ConfirmOrder_1)
 
         Step7 As TestStep:
             Description: ="Select 'OKButton2'"
             Screen: =OneSatchel
-            Value: =Select('OKButton2')
+            Value: =Select(OKButton2)
 
         Step8 As TestStep:
             Description: ="Select 'SavePicture_5'"
             Screen: =ConfirmPicture
-            Value: =Select('SavePicture_5')
+            Value: =Select(SavePicture_5)
 
         Step9 As TestStep:
             Description: ="Select 'SkipPicture_2'"
             Screen: =ConfirmPicture
-            Value: =Select('SkipPicture_2')
+            Value: =Select(SkipPicture_2)
 
         Step10 As TestStep:
             Description: ="Select 'PrintLabel1'"
             Screen: =PrintandShip
-            Value: =Select('PrintLabel1')
+            Value: =Select(PrintLabel1)
 
         Step11 As TestStep:
             Description: ="Select 'ShipOrder'"
             Screen: =PrintandShip
-            Value: =Select('ShipOrder')
+            Value: =Select(ShipOrder)
 
         Step4 As TestStep:
             Description: ="Select 'PrintLabel1_1'"
             Screen: =ShippedOrder
-            Value: =Select('PrintLabel1_1')
+            Value: =Select(PrintLabel1_1)
 
     "'7c0273a2-2192-48b7-b97a-0927744b11cd' As TestCase":
         Description: =""
@@ -68,57 +68,57 @@
         Step1 As TestStep:
             Description: ="Select 'Icon3'"
             Screen: =Login
-            Value: =Select('Icon3')
+            Value: =Select(Icon3)
 
         Step2 As TestStep:
             Description: ="Set 'staffid_Text_1'.Text to ""00000"""
             Screen: =Login
-            Value: =SetProperty('staffid_Text_1'.Text, "00000")
+            Value: =SetProperty(staffid_Text_1.Text, "00000")
 
         Step3 As TestStep:
             Description: ="Select 'LoginButton7'"
             Screen: =Login
-            Value: =Select('LoginButton7')
+            Value: =Select(LoginButton7)
 
         Step5 As TestStep:
             Description: ="Select 'Button1' in row 1 in 'OrderList'"
             Screen: =Home
-            Value: =Select('OrderList', 1, 'Button1')
+            Value: =Select(OrderList, 1, Button1)
 
         Step6 As TestStep:
             Description: ="Select 'RejectOder_1'"
             Screen: =ViewOrder_1
-            Value: =Select('RejectOder_1')
+            Value: =Select(RejectOder_1)
 
         Step7 As TestStep:
             Description: |-
                 ="Set 'RejectReasonCode'.SelectedItems to Table({'Value':""Imperfect - Write off""})"
             Screen: =RejectReason
             Value: |-
-                =SetProperty('RejectReasonCode'.SelectedItems, Table({'Value':"Imperfect - Write off"}))
+                =SetProperty(RejectReasonCode.SelectedItems, Table({Value:"Imperfect - Write off"}))
 
         Step8 As TestStep:
             Description: ="Select 'RejectReasonCode'"
             Screen: =RejectReason
-            Value: =Select('RejectReasonCode')
+            Value: =Select(RejectReasonCode)
 
         Step9 As TestStep:
             Description: ="Select 'PrintLabel1_2'"
             Screen: =RejectReason
-            Value: =Select('PrintLabel1_2')
+            Value: =Select(PrintLabel1_2)
 
         Step10 As TestStep:
             Description: ="Select 'SavePicture_7'"
             Screen: =RejectOrder
-            Value: =Select('SavePicture_7')
+            Value: =Select(SavePicture_7)
 
         Step11 As TestStep:
             Description: ="Select 'SkipPicture_3'"
             Screen: =RejectOrder
-            Value: =Select('SkipPicture_3')
+            Value: =Select(SkipPicture_3)
 
         Step4 As TestStep:
             Description: ="Select 'PrintLabel1_3'"
             Screen: =RejectConfirm
-            Value: =Select('PrintLabel1_3')
+            Value: =Select(PrintLabel1_3)
 
