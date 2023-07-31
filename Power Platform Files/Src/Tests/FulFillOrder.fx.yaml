@@ -24,7 +24,7 @@
         Step5 As TestStep:
             Description: ="Select 'Button1' in row 1 in 'OrderList'"
             Screen: =Home
-            Value: =Select('OrderList', 1, 'Button1')
+            Value: =Select('OrderList', 6, 'Button1')
 
         Step6 As TestStep:
             Description: ="Select 'ConfirmOrder_1'"
