@@ -37,6 +37,7 @@
   },
   "ControlUniqueGuids": {},
   "ControlUniqueIds": {
+    "7c0273a2-2192-48b7-b97a-0927744b11cd": 564,
     "AddMediaButton2": 443,
     "AddMediaButton2_1": 462,
     "AddMediaWithImage2": 449,
@@ -595,7 +596,7 @@
   "DoesTestStepsMetadataExist": true,
   "FunctionParamsInvariantScripts": {},
   "FunctionParamsInvariantScriptsOnInstances": {},
-  "HeaderLastSavedDateTimeUTC": "07/31/2023 06:21:43",
+  "HeaderLastSavedDateTimeUTC": "07/31/2023 06:33:46",
   "IsLegacyComponentAllowGlobalScopeCase": false,
   "LocalConnectionIDReferences": {
     "014c50b6-3623-4118-8595-ae30e2b9801f": "\"/providers/microsoft.powerapps/apis/shared_office365/connections/shared-office365-7cb0b445-b731-4907-aebb-d07d814b691f\"",
@@ -741,6 +742,7 @@
     "triangle": 7
   },
   "OverridablePropertiesEntry": {
+    "7c0273a2-2192-48b7-b97a-0927744b11cd": {},
     "AddMediaButton2": {},
     "AddMediaButton2_1": {},
     "AddMediaWithImage2": {},
@@ -1299,6 +1301,7 @@
   "PCFDynamicSchemaForIRRetrievalEntry": {},
   "PCFTemplateEntry": {},
   "PublishOrderIndices": {
+    "7c0273a2-2192-48b7-b97a-0927744b11cd": 0,
     "AddMediaButton2": 255,
     "AddMediaButton2_1": 314,
     "AddMediaWithImage2": 244,
