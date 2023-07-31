@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "d5c70c4f-fd92-46cd-934c-a97f8133941b",
+    "Name": "PickandShip-CompleteOrder-v3-3",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "5db47adb-9b1a-ee11-8f6c-000d3a7a006a"
+  }
+]

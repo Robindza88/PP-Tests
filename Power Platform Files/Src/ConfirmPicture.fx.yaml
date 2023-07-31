@@ -1,0 +1,746 @@
+ConfirmPicture As screen:
+    OnVisible: |-
+        =Set(SavePicVar,"1");
+        
+        UpdateContext({varOrderStatusChange: false});
+
+    Background_12 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+
+    OrderDetails_4 As SelectedOrder:
+        CustomerFullName: =Upper(OrderList.Selected.CustomerFullName)
+        StyleDescription: =Concatenate(OrderList.Selected.ItemStyle," ", OrderList.Selected.ItemName)
+        Y: =100
+        ZIndex: =2
+
+    OrderConf2_2 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =18
+        Text: ="ORDER CONFIRMATION" || varCurrentStatus = "NEW"
+        Visible: =false
+        Width: =560
+        X: =38
+        Y: =214
+        ZIndex: =3
+
+    SavePicture_4 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "1",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                Set(
+                    Waitlabel,
+                    "2"
+                );
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    SavePicVar,
+                    "2"
+                );
+                Set(
+                    SavePicVar,
+                    JSON(
+                        UploadedImage2.Image,
+                        JSONFormat.IncludeBinaryData
+                    )
+                );
+                Set(
+                    SavePicVarTrimmed,
+                    Mid(
+                        SavePicVar,
+                        2,
+                        Len(SavePicVar) - 2
+                    )
+                );
+                
+            //Get First Name from FullName and OrderSelectedCustomerFullName
+            UpdateContext(
+                    {
+                        var_fullname: First(
+                            ForAll(Split(
+                                FullName,
+                                " "
+                            ), {Result: ThisRecord.Value})
+                        )
+                    }
+                );
+                UpdateContext(
+                    {
+                        var_orderselected: First(
+                            ForAll(Split(
+                                OrderList.Selected.CustomerFullName,
+                                " "
+                            ), {Result: ThisRecord.Value})
+                        )
+                    }
+                );
+                
+            //Get Street Number from Address and OrderSelectedDeliveryAddress1
+            UpdateContext(
+                    {
+                        var_Address: First(
+                            ForAll(Split(
+                                Address,
+                                " "
+                            ), {Result: ThisRecord.Value})
+                        )
+                    }
+                );
+                UpdateContext(
+                    {
+                        var_OrderSelectedAddress: First(
+                            ForAll(Split(
+                                OrderList.Selected.DeliveryAddress1,
+                                " "
+                            ), {Result: ThisRecord.Value})
+                        )
+                    }
+                );
+                
+            //Check if the Variable and Selected Order are the same, then make the API call
+            If(
+                    var_fullname.Result = var_orderselected.Result && var_Address.Result = var_OrderSelectedAddress.Result,
+                    Set(
+                        Oneflodata,
+                        'PickandShip-OnefloAPI-v3-3'.Run(
+                            varStoreDetails.StoreNumber,
+                            varStoreDetails.StoreName,
+                            varStoreDetails.OneflowUser,
+                            OrderList.Selected.WebOrderID,
+                            OrderList.Selected.QuantityOrdered,
+                            OrderList.Selected.ItemCode,
+                            FullName,
+                            Address,
+                            If(
+                                IsBlank(Address2),
+                                " ",
+                                Address2
+                            ),
+                            OrderList.Selected.DeliveryAddressCountryCode,
+                            OrderList.Selected.DeliveryAddressPostcode,
+                            OrderList.Selected.DeliveryAddressSuburb,
+                            OrderList.Selected.MobileNumber,
+                            OrderList.Selected.EmailAddress,
+                            OrderList.Selected.ATL,
+                            If(
+                                OrderList.Selected.ATL = "0",
+                                " ",
+                                varATLINstructions
+                            ),
+                            If(
+                                IsBlank(OrderList.Selected.SenderName),
+                                "Mathers Shoes Online",
+                                OrderList.Selected.SenderName
+                            ),
+                            'order-json'.Text,
+                            OrderList.Selected.DeliveryAddressState               
+                        )
+                    ),
+                 //if there is a mismatch show connection error and try again
+                    Notify("Connection Error: Please click the home button and process the order again");
+                    UpdateContext({OrderSelectionError: "true"});
+                );
+                
+            //Save Picture
+            'PickandShip-Picture-v3-3'.Run(
+                    User().FullName,
+                    GalleryVar.CustomerFullName,
+                    Concatenate(
+                        GalleryVar.WebOrderID,
+                        "-Confirmed-",
+                        Oneflodata.consigmentnote,
+                        ".jpg"
+                    ),
+                    SavePicVarTrimmed,
+                    StaffNumber,
+                    "Confirmed"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                );
+                If(
+                    Oneflodata.errormessage = "1",
+                    /*Set(
+                        BoomiConfirmResponse,
+                        'PNS-V3-3'.PNSAPIV33(
+                            {
+                                webOrderNumber: Text(OrderList.Selected.WebOrderID),
+                                webOrderLineId: Text(OrderList.Selected.Ext1OrderID),
+                                status: "Consigned",
+                                itemNumber: Text(OrderList.Selected.ItemCode),
+                                quantity: Text(OrderList.Selected.QuantityOrdered),
+                                storeNumber: Text(OrderList.Selected.FulfillingSiteID),
+                                staffId: staffid_Text_1.Text,
+                                consignmentID: Oneflodata.consignmentid,
+                                consignmentNote: Oneflodata.consigmentnote,
+                                ItemInternalId: "1234",
+                                WebOrderID: Text(OrderList.Selected.WebOrderID),
+                                OrderID: Text(OrderList.Selected.OrderID),
+                                Ext1OrderID: Text(OrderList.Selected.Ext1OrderID),
+                                Ext1OrderLineId: Text(OrderList.Selected.Ext1OrderLineId),
+                                FulfillingSiteID: Text(OrderList.Selected.FulfillingSiteID),
+                                CustCode: Text(OrderList.Selected.CustCode),
+                                SenderName: Text(OrderList.Selected.SenderName),
+                                RejectReason: "",
+                                CustomerFirstname: Text(OrderList.Selected.CustomerFirstname),
+                                CustomerLastName: Text(OrderList.Selected.CustomerLastName),
+                                CustomerFullName: Text(OrderList.Selected.CustomerFullName),
+                                DeliveryAddress1: Text(OrderList.Selected.DeliveryAddress1),
+                                DeliveryAddressSuburb: Text(OrderList.Selected.DeliveryAddressSuburb),
+                                DeliveryAddressPostcode: Text(OrderList.Selected.DeliveryAddressPostcode),
+                                DeliveryAddressState: Text(OrderList.Selected.DeliveryAddressState),
+                                DeliveryAddressCountryCode: Text(OrderList.Selected.DeliveryAddressCountryCode),
+                                EmailAddress: Text(OrderList.Selected.EmailAddress),
+                                MobileNumber: Text(OrderList.Selected.MobileNumber),
+                                QuantityOrdered: OrderList.Selected.QuantityOrdered,
+                                ATL: Text(OrderList.Selected.ATL),
+                                ATLInstructions: varATLINstructions
+                            }
+                        )
+                    )
+                );*/
+                Navigate(
+                    PrintandShip,
+                    ScreenTransition.None
+                ));
+                Reset(AddMediaButton2) = true,
+                Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+            Patch(
+                'PickandShip-OneFloLog',
+                Defaults('PickandShip-OneFloLog'),
+                {
+                    Title: Text(OrderList.Selected.WebOrderID),
+                    StoreNumber: varStoreDetails.StoreNumber,
+                    StoreName: varStoreDetails.StoreName,
+                    OneFloUser: varStoreDetails.OneflowUser,
+                    QtyOrder: OrderList.Selected.QuantityOrdered,
+                    ItemCode: OrderList.Selected.ItemCode,
+                    CusomterFullName: FullName,
+                    Address1: Address,
+                    Address2: Address2,
+                    Suburb: Concatenate(
+                        OrderList.Selected.DeliveryAddressSuburb,
+                        ";",
+                        OrderList.Selected.DeliveryAddressState,
+                        ";",
+                        OrderList.Selected.DeliveryAddressCountryCode
+                    ),
+                    PostCode: OrderList.Selected.DeliveryAddressPostcode,
+                    Mobile: OrderList.Selected.MobileNumber,
+                    Email: OrderList.Selected.EmailAddress,
+                    'ATL-Inst': Concatenate(
+                        OrderList.Selected.ATL,
+                        ";",
+                        OrderList.Selected.ATLInstructions
+                    ),
+                    SenderName: OrderList.Selected.SenderName,
+                    ExtOrderLineID: OrderList.Selected.Ext1OrderLineId,
+                    ConsignmentID: Oneflodata.consignmentid,
+                    ConsignmentNote: Oneflodata.consigmentnote,
+                    Dateandtime: Now()
+                }
+            );
+        Size: =18
+        Text: ="Save Picture"
+        Visible: =Refpic = "2"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =4
+
+    SkipPicture_2 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "2",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                Set(
+                    Waitlabel,
+                    "2"
+                );
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                
+            //Get First Name from FullName and OrderSelectedCustomerFullName
+            UpdateContext(
+                    {
+                        var_fullname: First(
+                            ForAll(
+                                Split(
+                                    FullName,
+                                    " "
+                                ),
+                                {Result: ThisRecord.Value}
+                            )
+                        )
+                    }
+                );
+                UpdateContext(
+                    {
+                        var_orderselected: First(
+                            ForAll(
+                                Split(
+                                    OrderList.Selected.CustomerFullName,
+                                    " "
+                                ),
+                                {Result: ThisRecord.Value}
+                            )
+                        )
+                    }
+                );
+                
+            //Get Street Number from Address and OrderSelectedDeliveryAddress1
+            UpdateContext(
+                    {
+                        var_Address: First(
+                            ForAll(
+                                Split(
+                                    Address,
+                                    " "
+                                ),
+                                {Result: ThisRecord.Value}
+                            )
+                        )
+                    }
+                );
+                UpdateContext(
+                    {
+                        var_OrderSelectedAddress: First(
+                            ForAll(
+                                Split(
+                                    OrderList.Selected.DeliveryAddress1,
+                                    " "
+                                ),
+                                {Result: ThisRecord.Value}
+                            )
+                        )
+                    }
+                );
+                
+            //Check if the Variable and Selected Order are the same, then make the API call
+            If(
+                    var_fullname.Result = var_orderselected.Result && var_Address.Result = var_OrderSelectedAddress.Result,
+                    Set(
+                        Oneflodata,
+                        'PickandShip-OnefloAPI-v3-3'.Run(
+                            varStoreDetails.StoreNumber,
+                            varStoreDetails.StoreName,
+                            varStoreDetails.OneflowUser,
+                            OrderList.Selected.WebOrderID,
+                            OrderList.Selected.QuantityOrdered,
+                            OrderList.Selected.ItemCode,
+                            FullName,
+                            Address,
+                            If(
+                                IsBlank(Address2),
+                                "",
+                                Address2
+                            ),
+                            OrderList.Selected.DeliveryAddressCountryCode,
+                            OrderList.Selected.DeliveryAddressPostcode,
+                            OrderList.Selected.DeliveryAddressSuburb,
+                            OrderList.Selected.MobileNumber,
+                            OrderList.Selected.EmailAddress,
+                            OrderList.Selected.ATL,
+                            If(
+                                OrderList.Selected.ATL = "0",
+                                "",
+                                varATLINstructions
+                            ),
+                            If(
+                                IsBlank(OrderList.Selected.SenderName),
+                                "Mathers Shoes Online",
+                                OrderList.Selected.SenderName
+                            ),
+                            'order-json'.Text,
+                            OrderList.Selected.DeliveryAddressState               
+                        )
+                    ),
+                 //if there is a mismatch show connection error and try again
+                    Notify("Connection Error: Please click the home button and process the order again");
+                    Set(
+                        Waitlabel,
+                        "1"
+                    );
+            UpdateContext({OrderSelectionError: "true"});
+                );
+                
+            /* //Save Picture
+             'PickandShip-SavePicture1'.Run(
+                User().FullName,
+                GalleryVar.CustomerFullName,
+                staffid_Text_1.Text,
+                Concatenate(
+                    GalleryVar.WebOrderID,"-Confirmed",
+                    ".jpg"
+                ),
+                SavePicVarTrimmed,
+                {
+                    File: {
+                        name: AddMediaButton2.FileName,
+                        contentBytes: UploadedImage2.Image
+                    }
+                }
+            ); */  
+            Set(
+                    lastActivityTime,
+                    Now()
+                );
+                If(
+                    Oneflodata.errormessage = "1",
+                    /*Set(
+                        BoomiConfirmResponse,
+                        'PNS-V3-3'.PNSAPIV33(
+                            {
+                                webOrderNumber: Text(OrderList.Selected.WebOrderID),
+                                webOrderLineId: Text(OrderList.Selected.Ext1OrderID),
+                                status: "Consigned",
+                                itemNumber: Text(OrderList.Selected.ItemCode),
+                                quantity: Text(OrderList.Selected.QuantityOrdered),
+                                storeNumber: Text(OrderList.Selected.FulfillingSiteID),
+                                staffId: staffid_Text_1.Text,
+                                consignmentID: Oneflodata.consignmentid,
+                                consignmentNote: Oneflodata.consigmentnote,
+                                WebOrderID: Text(OrderList.Selected.WebOrderID),
+                                OrderID: Text(OrderList.Selected.OrderID),
+                                Ext1OrderID: Text(OrderList.Selected.Ext1OrderID),
+                                Ext1OrderLineId: Text(OrderList.Selected.Ext1OrderLineId),
+                                FulfillingSiteID: Text(OrderList.Selected.FulfillingSiteID),
+                                CustCode: Text(OrderList.Selected.CustCode),
+                                SenderName: Text(OrderList.Selected.SenderName),
+                                CustomerFirstname: Text(OrderList.Selected.CustomerFirstname),
+                                CustomerLastName: Text(OrderList.Selected.CustomerLastName),
+                                CustomerFullName: Text(OrderList.Selected.CustomerFullName),
+                                DeliveryAddress1: Text(OrderList.Selected.DeliveryAddress1),
+                                DeliveryAddressSuburb: Text(OrderList.Selected.DeliveryAddressSuburb),
+                                DeliveryAddressPostcode: Text(OrderList.Selected.DeliveryAddressPostcode),
+                                DeliveryAddressState: Text(OrderList.Selected.DeliveryAddressState),
+                                DeliveryAddressCountryCode: Text(OrderList.Selected.DeliveryAddressCountryCode),
+                                EmailAddress: Text(OrderList.Selected.EmailAddress),
+                                MobileNumber: Text(OrderList.Selected.MobileNumber),
+                                QuantityOrdered: OrderList.Selected.QuantityOrdered,
+                                ATL: Text(OrderList.Selected.ATL),
+                                ATLInstructions: varATLINstructions,
+                                RejectReason: ""
+                            }
+                        )
+                    )
+                );*/
+                Navigate(
+                    PrintandShip,
+                    ScreenTransition.None
+                )),
+                Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+            Patch(
+                'PickandShip-OneFloLog',
+                Defaults('PickandShip-OneFloLog'),
+                {
+                    Title: Text(OrderList.Selected.WebOrderID),
+                    StoreNumber: varStoreDetails.StoreNumber,
+                    StoreName: varStoreDetails.StoreName,
+                    OneFloUser: varStoreDetails.OneflowUser,
+                    QtyOrder: OrderList.Selected.QuantityOrdered,
+                    ItemCode: OrderList.Selected.ItemCode,
+                    CusomterFullName: FullName,
+                    Address1: Address,
+                    Address2: Address2,
+                    Suburb: Concatenate(
+                        OrderList.Selected.DeliveryAddressSuburb,
+                        ";",
+                        OrderList.Selected.DeliveryAddressState,
+                        ";",
+                        OrderList.Selected.DeliveryAddressCountryCode
+                    ),
+                    PostCode: OrderList.Selected.DeliveryAddressPostcode,
+                    Mobile: OrderList.Selected.MobileNumber,
+                    Email: OrderList.Selected.EmailAddress,
+                    'ATL-Inst': Concatenate(
+                        OrderList.Selected.ATL,
+                        ";",
+                        OrderList.Selected.ATLInstructions
+                    ),
+                    SenderName: OrderList.Selected.SenderName,
+                    ExtOrderLineID: OrderList.Selected.Ext1OrderLineId,
+                    ConsignmentID: Oneflodata.consignmentid,
+                    ConsignmentNote: Oneflodata.consigmentnote
+                }
+            );
+        Size: =18
+        Text: ="Skip Picture"
+        Visible: =Refpic = "2"
+        Width: =204
+        X: =40
+        Y: =935
+        ZIndex: =5
+
+    Image15_1 As image:
+        BorderColor: =RGBA(211,236,239,100%)
+        BorderStyle: =BorderStyle.None
+        Height: =139
+        HoverBorderColor: =Color.Black
+        Image: ='Icon - Camera take'
+        OnSelect: =Collect(colphoto, AddMediaButton2.Media);Set(Varphoto,AddMediaButton2.Media)
+        TabIndex: =1
+        Visible: =Refpic = "2"
+        Width: =190
+        X: =222
+        Y: =773
+        ZIndex: =6
+
+    SavePicture_5 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "2",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New"|| varCurrentStatus = "NEW",
+                Set(
+                    Refpic,
+                    "2"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                ),
+                Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+        Size: =18
+        Text: ="OK"
+        Visible: =Refpic = "1"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =7
+
+    Label1_2 As label:
+        Align: =Align.Center
+        Height: =68
+        Size: =21
+        Text: ="Please take a photo on the next screen as shown in the example above"
+        Visible: =Refpic = "1"
+        Width: =585
+        X: =30
+        Y: =708
+        ZIndex: =8
+
+    OrderStatusChange_2 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.69)
+        Height: =956
+        Visible: =varOrderStatusChange
+        Width: =640
+        Y: =100
+        ZIndex: =12
+
+        Label8_2 As label:
+            Align: =Align.Center
+            Fill: =RGBA(211, 236, 239, 1)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =427
+            Size: =21
+            Text: |-
+                ="This Order has been cancelled by the Pick and Ship Administrator
+                
+                Please click the Home icon to process the next order"
+            Width: =560
+            X: =40
+            Y: =150
+            ZIndex: =1
+
+        Icon5_35 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Home
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =484
+            ZIndex: =2
+
+        Icon5_34 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(184, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Warning
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =198
+            ZIndex: =3
+
+    Busy As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.7)
+        Height: =870
+        Visible: =Waitlabel = "2"
+        Width: =640
+        Y: =186
+        ZIndex: =15
+
+        Spinner_1 As image:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =209
+            Image: =tenor
+            Visible: =Waitlabel = "2"
+            Width: =254
+            X: =191
+            Y: =219
+            ZIndex: =1
+
+        "'Cons-Success_4' As label":
+            Align: =Align.Center
+            Fill: =RGBA(148,196,117,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =138
+            Size: =18
+            Text: |-
+                ="Please wait...
+                Retreiving a consignment and label"
+            Visible: =Waitlabel = "2"
+            Width: =640
+            Y: =40
+            ZIndex: =2
+
+    AddMediaWithImage2 As group:
+        Height: =5
+        Width: =5
+        X: =60
+        Y: =60
+        ZIndex: =18
+
+        UploadedImage2 As image:
+            ApplyEXIFOrientation: =false
+            Height: =432
+            Image: =If(IsBlank(AddMediaButton2.Media), 'Munro-example', AddMediaButton2.Media)
+            OnSelect: |
+                =Set(
+                    varCurrentStatus,
+                    LookUp(
+                        StoreOnlineOrders,
+                        WebOrderID = GalleryVar.WebOrderID && Ext1OrderLineId = GalleryVar.Ext1OrderLineId,
+                        OrderStatus
+                    )
+                );
+                If(
+                    varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                    Set(
+                        SavePicVar,
+                        "0"
+                    );
+                    Collect(
+                        colphoto,
+                        AddMediaButton2.Media
+                    );
+                    Set(
+                        Varphoto,
+                        JSON(
+                            UploadedImage2.Image,
+                            JSONFormat.IncludeBinaryData
+                        )
+                    ),
+                    Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                    UpdateContext({varOrderStatusChange: true})
+                );
+            Width: =586
+            X: =29
+            Y: =263
+            ZIndex: =10
+
+        AddMediaButton2 As addMedia:
+            Height: =649
+            OnSelect: |
+                =Set(
+                    varCurrentStatus,
+                    LookUp(
+                        StoreOnlineOrders,
+                        WebOrderID = GalleryVar.WebOrderID && Ext1OrderLineId = GalleryVar.Ext1OrderLineId,
+                        OrderStatus
+                    )
+                );
+                If(
+                    varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                    Set(
+                        SavePicVar,
+                        "0"
+                    );
+                    Collect(
+                        colphoto,
+                        AddMediaButton2.Media
+                    );
+                    Set(
+                        Varphoto,
+                        JSON(
+                            UploadedImage2.Image,
+                            JSONFormat.IncludeBinaryData
+                        )
+                    ),
+                    Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                    UpdateContext({varOrderStatusChange: true})
+                );
+            Size: =25
+            Text: =
+            UseMobileCamera: =true
+            Width: =586
+            X: =29
+            Y: =263
+            ZIndex: =11
+

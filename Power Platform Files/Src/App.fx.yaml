@@ -1,0 +1,61 @@
+App As appinfo:
+    BackEnabled: =false
+    OnError: |-
+        =Concurrent(
+            Set(
+                lastndays,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Display Name' = "last-n-days"
+                ).Value
+            ),
+            Set(
+                breachtime,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Display Name' = "breachtime"
+                ).Value
+            ),
+            Set(
+                screentime,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Display Name' = "ScreenTimer"
+                ).Value
+            )
+        )
+    OnStart: |+
+        =ClearCollect(List2,SortByColumns(Filter(StoreOnlineOrders,OrderStatus = "NEW"),"OrderDate",SortOrder.Descending));
+        Concurrent(
+            Set(
+                lastndays,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Schema Name' = "pns_WMLastnDaysV33"
+                ).Value
+            ),
+            Set(
+                breachtime,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Display Name' = "W&M-BreachTime-V3-3"
+                ).Value
+            ),
+            Set(
+                screentime,
+                LookUp(
+                    'Environment Variable Values',
+                    'Environment Variable Definition'.'Display Name' = "W&M-ScreenTimer-V3-3"
+                ).Value
+            )
+        );
+        Set(varStoreDetails,LookUp(StoreAddresses,Upper(Email) in Upper(User().Email)));
+        
+
+    Host As hostControl.DefaultHostControlVariant:
+        OnCancel: =false
+        OnEdit: =false
+        OnNew: =false
+        OnSave: =false
+        OnView: =false
+

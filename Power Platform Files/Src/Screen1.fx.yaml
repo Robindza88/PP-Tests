@@ -1,0 +1,45 @@
+Screen1 As screen:
+
+    Icon5_24 As icon.Home:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        BorderStyle: =BorderStyle.None
+        Color: =RGBA(0, 0, 0, 1)
+        Height: =49
+        HoverBorderColor: =Color.Black
+        Icon: =Icon.Edit
+        OnSelect: =
+        TabIndex: =1
+        Width: =51
+        X: =565
+        Y: =24
+        ZIndex: =4
+
+    Label2 As label:
+        Height: =70
+        Size: =21
+        Text: =Upper(User().Email)
+        Width: =560
+        X: =16
+        Y: =3
+        ZIndex: =8
+
+    "'order-json' As label":
+        Height: =1133
+        Size: =21
+        Text: |-
+            ="{
+            	`status`: `Consigned`,
+            	`WebOrderID`:  `"& OrderList.Selected.WebOrderID &"`,
+            	`OrderID`: `"& OrderList.Selected.OrderID &"`,
+            	`Ext1OrderID`: `"& OrderList.Selected.Ext1OrderID &"`,
+            	`Ext1OrderLineId`: `"& OrderList.Selected.Ext1OrderLineId &"`,
+            	`FulfillingSiteID`: `"& OrderList.Selected.FulfillingSiteID &"`,
+            	`CustCode`: `"& OrderList.Selected.CustCode &"`,
+                `CustomerFirstname`: `"& OrderList.Selected.CustomerFirstname &"`,
+            	`CustomerLastName`: `"& OrderList.Selected.CustomerLastName &"`,
+                `CustomerFullName`: `"& OrderList.Selected.CustomerFullName &"`
+            }"
+        Width: =640
+        Y: =3
+        ZIndex: =9
+

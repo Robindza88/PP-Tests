@@ -1,0 +1,456 @@
+RejectOrder As screen:
+    OnVisible: =Set(SavePicVar,"1");
+
+    Background_13 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+        ZIndex: =2
+
+    OrderDetails_11 As SelectedOrder:
+        CustomerFullName: =Upper(OrderList.Selected.CustomerFullName)
+        StyleDescription: =Concatenate(OrderList.Selected.ItemStyle," ", OrderList.Selected.ItemName)
+        Y: =100
+        ZIndex: =3
+
+    OrderConf2_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =18
+        Text: ="ORDER REJECTION"
+        Width: =560
+        X: =38
+        Y: =214
+        ZIndex: =4
+
+    SavePicture_6 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "1",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                Waitlabel,
+                "1"
+            );
+            Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New"  || varCurrentStatus = "NEW",
+                Set(
+                    Waitlabel,
+                    "2"
+                );
+                Set(
+                    SavePicVar,
+                    "2"
+                );
+                Set(
+                    SavePicVarReject,
+                    JSON(
+                        UploadedImage2_1.Image,
+                        JSONFormat.IncludeBinaryData
+                    )
+                );
+                Set(
+                    SavePicVarTrimmedReject,
+                    Mid(
+                        SavePicVarReject,
+                        2,
+                        Len(SavePicVar) - 2
+                    )
+                );
+                'PickandShip-Picture-v3-3'.Run(
+                    varStoreDetails.StoreName,
+                    GalleryVar.CustomerFullName,
+                    Concatenate(
+                        GalleryVar.WebOrderID,
+                        "-Rejected",
+                        ".jpg"
+                    ),
+                    SavePicVarTrimmed,
+                    StaffNumber,
+                    "Rejected"
+                );
+                //Reject Order using BOOMI API
+            //Reject Order using BOOMI API
+              Set(
+                varCompleteOrder,
+                'PickandShip-CompleteOrder-v3-3'.Run(CompleteOrder.Text)
+                );
+                If(
+                varCompleteOrder.status = "Success",
+                Navigate(
+                    ShippedOrder,
+                    ScreenTransition.None
+                );
+                UpdateContext({varBusyShipOrder: false});
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                ),
+                UpdateContext({boomiresponse: false});
+                Notify("Connection Error, please try again");
+                
+            );
+            /*Set(
+                    BoomiRejectResponse,
+                    IfError(
+                        'PNS-V3-3'.PNSAPIV33(
+                            {
+                                webOrderNumber: Text(OrderList.Selected.WebOrderID),
+                                webOrderLineId: Text(OrderList.Selected.Ext1OrderID),
+                                status: "Rejected",
+                                itemNumber: Text(OrderList.Selected.ItemCode),
+                                quantity: Text(OrderList.Selected.QuantityOrdered),
+                                storeNumber: Text(OrderList.Selected.FulfillingSiteID),
+                                staffId: staffid_Text_1.Text,
+                                consignmentID: Oneflodata.consignmentid,
+                                consignmentNote: Oneflodata.consigmentnote,
+                                ItemInternalId: "",
+                                WebOrderID: Text(OrderList.Selected.WebOrderID),
+                                OrderID: Text(OrderList.Selected.OrderID),
+                                Ext1OrderID: Text(OrderList.Selected.Ext1OrderID),
+                                Ext1OrderLineId: Text(OrderList.Selected.Ext1OrderLineId),
+                                FulfillingSiteID: Text(OrderList.Selected.FulfillingSiteID),
+                                CustCode: Text(OrderList.Selected.CustCode),
+                                SenderName: Text(OrderList.Selected.SenderName),
+                                rejectedReason: RejectVar,
+                                CustomerFirstname: Text(OrderList.Selected.CustomerFirstname),
+                                CustomerLastName: Text(OrderList.Selected.CustomerLastName),
+                                CustomerFullName: Text(OrderList.Selected.CustomerFullName),
+                                DeliveryAddress1: Text(OrderList.Selected.DeliveryAddress1),
+                                DeliveryAddressSuburb: Text(OrderList.Selected.DeliveryAddressSuburb),
+                                DeliveryAddressPostcode: Text(OrderList.Selected.DeliveryAddressPostcode),
+                                DeliveryAddressState: Text(OrderList.Selected.DeliveryAddressState),
+                                DeliveryAddressCountryCode: Text(OrderList.Selected.DeliveryAddressCountryCode),
+                                EmailAddress: Text(OrderList.Selected.EmailAddress),
+                                MobileNumber: Text(OrderList.Selected.MobileNumber),
+                                QuantityOrdered: Text(OrderList.Selected.QuantityOrdered),
+                                ATL: Text(OrderList.Selected.ATL),
+                                ATLInstructions: varATLINstructions
+                            }
+                        ),
+                        Set(
+                            showerrorlabel,
+                            "1"
+                        ),
+                        Set(
+                            lastActivityTime,
+                            Now()
+                        );
+                    )
+                );*/
+                ,
+                Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+            
+            Navigate(
+                    RejectConfirm,
+                    ScreenTransition.None
+                );
+            Reset(AddMediaButton2_1) = true;
+        Size: =18
+        Text: ="Save Picture"
+        Visible: =Refpic = "2"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =6
+
+    SkipPicture_3 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "2",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                Waitlabel,
+                "1"
+            );
+            Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                Set(
+                    Waitlabel,
+                    "2"
+                );
+                Set(
+                    SavePicVar,
+                    "1"
+                );
+               Set(
+                varCompleteOrder,
+                'PickandShip-CompleteOrder-v3-3'.Run(CompleteOrder.Text)
+                ); 
+                If(
+                varCompleteOrder.status = "Success",
+                Navigate(
+                    ShippedOrder,
+                    ScreenTransition.None
+                );
+                UpdateContext({varBusyShipOrder: false});
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                ),
+                Notify("Connection Error, please try again");
+                
+                );
+            /*Reject Order using BOOMI API
+                Set(
+                    BoomiRejectResponse,
+                    IfError(
+                        'PNS-V3-3'.PNSAPIV33(
+                            {
+                                webOrderNumber: Text(OrderList.Selected.WebOrderID),
+                                webOrderLineId: Text(OrderList.Selected.Ext1OrderID),
+                                status: "Rejected",
+                                itemNumber: Text(OrderList.Selected.ItemCode),
+                                quantity: Text(OrderList.Selected.QuantityOrdered),
+                                storeNumber: Text(OrderList.Selected.FulfillingSiteID),
+                                staffId: staffid_Text_1.Text,
+                                consignmentID: " ",
+                                consignmentNote: " ",
+                                ItemInternalId: "",
+                                WebOrderID: Text(OrderList.Selected.WebOrderID),
+                                OrderID: Text(OrderList.Selected.OrderID),
+                                Ext1OrderID: Text(OrderList.Selected.Ext1OrderID),
+                                Ext1OrderLineId: Text(OrderList.Selected.Ext1OrderLineId),
+                                FulfillingSiteID: Text(OrderList.Selected.FulfillingSiteID),
+                                CustCode: Text(OrderList.Selected.CustCode),
+                                SenderName: Text(OrderList.Selected.SenderName),
+                                rejectedReason: RejectVar,
+                                CustomerFirstname: Text(OrderList.Selected.CustomerFirstname),
+                                CustomerLastName: Text(OrderList.Selected.CustomerLastName),
+                                CustomerFullName: Text(OrderList.Selected.CustomerFullName),
+                                DeliveryAddress1: Text(OrderList.Selected.DeliveryAddress1),
+                                DeliveryAddressSuburb: Text(OrderList.Selected.DeliveryAddressSuburb),
+                                DeliveryAddressPostcode: Text(OrderList.Selected.DeliveryAddressPostcode),
+                                DeliveryAddressState: Text(OrderList.Selected.DeliveryAddressState),
+                                DeliveryAddressCountryCode: Text(OrderList.Selected.DeliveryAddressCountryCode),
+                                EmailAddress: Text(OrderList.Selected.EmailAddress),
+                                MobileNumber: Text(OrderList.Selected.MobileNumber),
+                                QuantityOrdered: Text(OrderList.Selected.QuantityOrdered),
+                                ATL: Text(OrderList.Selected.ATL),
+                                ATLInstructions: varATLINstructions
+                            }
+                        ),
+                        Set(
+                            showerrorlabel,
+                            "1"
+                        ),
+                        Set(
+                            lastActivityTime,
+                            Now()
+                        );
+                    )
+                );*/
+                
+                ,
+                Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+            Navigate(
+                RejectConfirm,
+                ScreenTransition.None
+            );
+            Reset(AddMediaButton2_1) = true;
+        Size: =18
+        Text: ="Skip Picture"
+        Visible: =Refpic = "2"
+        Width: =204
+        X: =40
+        Y: =935
+        ZIndex: =7
+
+    ClickPic_1 As image:
+        BorderColor: =RGBA(211,236,239,100%)
+        BorderStyle: =BorderStyle.None
+        Height: =139
+        HoverBorderColor: =Color.Black
+        Image: ='Icon - Camera take'
+        OnSelect: =Set(SavePicVar,"3");Set(lastActivityTime, Now());
+        TabIndex: =1
+        Visible: =Refpic = "2"
+        Width: =190
+        X: =223
+        Y: =788
+        ZIndex: =9
+
+    SavePicture_7 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(SavePicVar = "2",DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                Refpic,
+                "2"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        Size: =18
+        Text: ="OK"
+        Visible: =Refpic = "1"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =13
+
+    Label1_3 As label:
+        Align: =Align.Center
+        Height: =68
+        Size: =21
+        Text: ="Please take a photo on the next screen as shown in the example above"
+        Visible: =Refpic = "1"
+        Width: =585
+        X: =25
+        Y: =811
+        ZIndex: =14
+
+    OrderStatusChange_4 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.69)
+        Height: =956
+        Visible: =varOrderStatusChange
+        Width: =640
+        Y: =140
+        ZIndex: =18
+
+        Label8_4 As label:
+            Align: =Align.Center
+            Fill: =RGBA(211, 236, 239, 1)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =427
+            Size: =21
+            Text: |-
+                ="This Order has been cancelled by the Pick and Ship Administrator
+                
+                Please click the Home icon to process the next order"
+            Width: =560
+            X: =40
+            Y: =150
+            ZIndex: =1
+
+        Icon5_39 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Home
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =484
+            ZIndex: =2
+
+        Icon5_38 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(184, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Warning
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =198
+            ZIndex: =3
+
+    AddMediaWithImage2_1 As group:
+        Height: =5
+        Width: =5
+        X: =60
+        Y: =60
+        ZIndex: =18
+
+        UploadedImage2_1 As image:
+            ApplyEXIFOrientation: =false
+            Height: =432
+            Image: =If(IsBlank(AddMediaButton2_1.Media), 'Munro-example', AddMediaButton2_1.Media)
+            OnSelect: =Set(SavePicVar,"0");Collect(colphoto, AddMediaButton2_1.Media);Set(Varphoto,AddMediaButton2_1.Media)
+            Width: =585
+            X: =25
+            Y: =256
+            ZIndex: =16
+
+        AddMediaButton2_1 As addMedia:
+            Height: =667
+            OnSelect: |-
+                =Set(SavePicVar,"0");Collect(colphoto, {Url: UploadedImage2.Image});Set(Varphoto,AddMediaButton2_1.Media)
+            Size: =25
+            Text: =
+            UseMobileCamera: =true
+            Width: =586
+            X: =27
+            Y: =256
+            ZIndex: =17
+
+    RejectBusy As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.7)
+        Height: =870
+        Visible: |
+            =Waitlabel = "2"
+        Width: =640
+        Y: =186
+        ZIndex: =19
+
+        Spinner_2 As image:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =209
+            Image: =tenor
+            Width: =254
+            X: =191
+            Y: =219
+            ZIndex: =1
+
+        "'Cons-Success_5' As label":
+            Align: =Align.Center
+            Fill: =RGBA(239,103,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =138
+            Size: =18
+            Text: |-
+                ="Please wait...
+                Rejecting order"
+            Width: =640
+            Y: =40
+            ZIndex: =2
+

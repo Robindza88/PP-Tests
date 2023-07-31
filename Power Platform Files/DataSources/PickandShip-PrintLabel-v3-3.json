@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "e1caecdd-6752-48bb-9ccb-36e64242cb4f",
+    "Name": "PickandShip-PrintLabel-v3-3",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "03edce66-241a-ee11-8f6c-000d3a7a0009"
+  }
+]

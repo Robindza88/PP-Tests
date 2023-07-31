@@ -1,0 +1,36 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_sql",
+    "CdpRevision": {
+      "BaseUrl": "/v2",
+      "LastChangedTimeString": "2023-06-27T20:15:06.5580000Z",
+      "RevisionNumber": 2
+    },
+    "ConnectedDataSourceInfoNameMapping": {
+      "57dfb1b5-7d79-4046-a4da-fd831d5befe1-KeyId": "KeyId",
+      "Address1": "Address1",
+      "Address2": "Address2",
+      "Address3": "Address3",
+      "Country": "Country",
+      "CountryCode": "CountryCode",
+      "Division": "Division",
+      "Email": "Email",
+      "ID": "ID",
+      "OneflowUser": "OneflowUser",
+      "ParentPrintStore": "ParentPrintStore",
+      "Postcode": "Postcode",
+      "State": "State",
+      "StoreCode": "StoreCode",
+      "StoreName": "StoreName",
+      "StoreNumber": "StoreNumber",
+      "StoreType": "StoreType",
+      "Suburb": "Suburb"
+    },
+    "DatasetName": "MFG-SQL1,Test-Storeweborders",
+    "EncodeDataset": false,
+    "IsSampleData": false,
+    "IsWritable": false,
+    "Name": "StoreAddresses",
+    "Type": "ConnectedDataSourceInfo"
+  }
+]

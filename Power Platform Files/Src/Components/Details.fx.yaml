@@ -1,0 +1,183 @@
+Details As CanvasComponent:
+    Address1: ="Text"
+    ATL: ="Text"
+    DeliveryInstructions: ="Text"
+    Email: ="Text"
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =600
+    OrderID: ="Text"
+    PostCode: ="Text"
+    Suburb: ="Text"
+    Telephone: ="Text"
+    Width: =560
+    X: =0
+    Y: =0
+    ZIndex: =1
+
+    BK_4 As label:
+        Align: =Align.Center
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =600
+        Size: =18
+        Text: =""
+        Width: =560
+        ZIndex: =2
+
+    Label22_18 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =45
+        Size: =16
+        Text: ="Order ID"
+        Width: =130
+        X: =21
+        Y: =169
+        ZIndex: =3
+
+    Label22_19 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =45
+        Size: =16
+        Text: ="Address"
+        Width: =130
+        X: =21
+        Y: =214
+        ZIndex: =4
+
+    Label22_20 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =45
+        Size: =16
+        Text: ="Email"
+        Width: =130
+        X: =21
+        Y: =349
+        ZIndex: =5
+
+    Label22_21 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =45
+        Size: =16
+        Text: ="Telephone"
+        Width: =130
+        X: =21
+        Y: =394
+        ZIndex: =6
+
+    Label22_22 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =45
+        Size: =16
+        Text: |-
+            ="Authority To
+             Leave"
+        Width: =130
+        X: =21
+        Y: =449
+        ZIndex: =7
+
+    Label22_23 As label:
+        Align: =Align.Right
+        Font: =Font.Arial
+        Height: =70
+        Size: =16
+        Text: |-
+            ="Delivery
+             Instructions"
+        Width: =130
+        X: =21
+        Y: =502
+        ZIndex: =8
+
+    OrderID1_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.OrderID
+        Width: =380
+        X: =165
+        Y: =169
+        ZIndex: =9
+
+    "'Street Address_3' As label":
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.Address1
+        Width: =380
+        X: =165
+        Y: =214
+        ZIndex: =10
+
+    Suburb_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.Suburb
+        Width: =380
+        X: =165
+        Y: =259
+        ZIndex: =11
+
+    StatePostCode_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.PostCode
+        Width: =380
+        X: =165
+        Y: =304
+        ZIndex: =12
+
+    EmailID_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.Email
+        Width: =380
+        X: =165
+        Y: =349
+        ZIndex: =13
+
+    MobileNumber1_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.Telephone
+        Width: =380
+        X: =165
+        Y: =394
+        ZIndex: =14
+
+    "'ATL Instructions_3' As label":
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =70
+        Size: =16
+        Text: =Details.DeliveryInstructions
+        Width: =380
+        X: =165
+        Y: =502
+        ZIndex: =15
+
+    ATL_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =45
+        Size: =16
+        Text: =Details.ATL
+        Width: =380
+        X: =165
+        Y: =449
+        ZIndex: =16
+

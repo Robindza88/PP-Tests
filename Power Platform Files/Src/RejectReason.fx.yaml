@@ -1,0 +1,190 @@
+RejectReason As screen:
+    OnVisible: |-
+        =UpdateContext({varOrderStatusChange: false})
+
+    Background_10 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+
+    OrderDetails_5 As SelectedOrder:
+        CustomerFullName: =Upper(OrderList.Selected.CustomerFullName)
+        StyleDescription: =Concatenate(OrderList.Selected.ItemStyle," ", OrderList.Selected.ItemName)
+        Y: =100
+        ZIndex: =2
+
+    BK_2 As label:
+        Align: =Align.Center
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =600
+        Size: =18
+        Text: =""
+        Width: =560
+        X: =40
+        Y: =262
+        ZIndex: =3
+
+    OrderConf1_2 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =18
+        Text: ="ORDER REJECTION"
+        Width: =560
+        X: =38
+        Y: =214
+        ZIndex: =4
+
+    PrintLabel1_2 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(IsBlank(RejectReasonCode.Selected.Value),DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |-
+            =If(
+                Not(IsBlank(RejectReasonCode.Selected.Value)),
+                Set(
+                    Waitlabel,
+                    "1"
+                );
+                Set(
+                    varCurrentStatus,
+                    LookUp(
+                        StoreOnlineOrders,
+                        WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID ,
+                        OrderStatus
+                    )
+                );
+                If(
+                    varCurrentStatus = "New" || varCurrentStatus = "NEW" || GalleryVar.OrderStatus = "NEW",
+            /*Set(
+                RejectVar,
+                If(
+                    RejectReasonRadio2_1.Selected.Value = "Other",
+                    RejectReasonTextInput1_2.Text,
+                    RejectReasonRadio2_1.Selected.Value
+                )
+            );*/
+                    Set(
+                        RejectVar,
+                        RejectReasonCode.Selected.Value
+                    );
+                    Set(
+                        Varphoto,
+                        Blank()
+                    );
+                    Set(
+                        Refpic,
+                        "1"
+                    );
+                    Reset(AddMediaButton2_1) = true;
+                    Set(
+                        lastActivityTime,
+                        Now()
+                    );
+                    Navigate(
+                        RejectOrder,
+                        ScreenTransition.None
+                    ),
+                    Notify("This Order has been cancelled, please click the Home icon to select the next order");
+                    UpdateContext({varOrderStatusChange: true})
+                ),
+                Notify("Please select a Reject Reason to reject this order.")
+            )
+        Size: =18
+        Text: ="Next"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =5
+
+    Timer2_10 As timer:
+        AutoStart: =true
+        Color: =Color.Black
+        Duration: =If(IsBlank(screentime),600000,screentime)
+        Fill: =RGBA(211,236,239,100%)
+        Height: =48
+        OnTimerEnd: =If(DateDiff(lastActivityTime, Now(), TimeUnit.Milliseconds) > Value(If(IsBlank(screentime),600000,screentime))-10000, Navigate(Login,ScreenTransition.None))
+        Repeat: =true
+        Start: =true
+        Visible: =false
+        Width: =84
+        X: =556
+        Y: =119
+        ZIndex: =6
+
+    RejectReasonCode As combobox:
+        BorderColor: =RGBA(0, 0, 0, 1)
+        ChevronBackground: =RGBA(132,202,204,1)
+        ChevronHoverBackground: =ColorFade(RGBA(132,202,204,1), -20%)
+        DisplayFields: =["Value"]
+        Height: =84
+        InputTextPlaceholder: =
+        IsSearchable: =false
+        Items: =["On Hold","Item Sold Prior","Odd","Imperfect - Write off","Imperfect Sellable","Stock Discrepancy"]
+        NoSelectionText: ="Select Reject Reason"
+        PressedFill: =RGBA(132,202,204,1)
+        SearchFields: =["Value"]
+        SearchItems: =[]
+        SelectionFill: =RGBA(132,202,204,1)
+        SelectMultiple: =false
+        Size: =21
+        Width: =490
+        X: =66
+        Y: =321
+        ZIndex: =7
+
+    OrderStatusChange_3 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.69)
+        Height: =956
+        Visible: =varOrderStatusChange
+        Width: =640
+        Y: =100
+        ZIndex: =8
+
+        Label8_3 As label:
+            Align: =Align.Center
+            Fill: =RGBA(211, 236, 239, 1)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =427
+            Size: =21
+            Text: |-
+                ="This Order has been cancelled by the Pick and Ship Administrator
+                
+                Please click the Home icon to process the next order"
+            Width: =560
+            X: =40
+            Y: =150
+            ZIndex: =1
+
+        Icon5_37 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Home
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =484
+            ZIndex: =2
+
+        Icon5_36 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(184, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Warning
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =198
+            ZIndex: =3
+

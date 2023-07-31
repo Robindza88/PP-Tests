@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "5b88f5b8-0136-479a-9dc4-c6233c449b6e",
+    "Name": "PickandShip-Picture-v3-3",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "cbb1ca60-241a-ee11-8f6c-000d3a7a0009"
+  }
+]

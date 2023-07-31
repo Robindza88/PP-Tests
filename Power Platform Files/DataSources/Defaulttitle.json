@@ -1,0 +1,8 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_pns-5fpickandshipv33-5f8b90d38903bf5fe4",
+    "Name": "Defaulttitle",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo"
+  }
+]

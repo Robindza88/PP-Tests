@@ -1,0 +1,115 @@
+RejectConfirm As screen:
+    OnVisible: =IfError("'Reject-Order'.BoomiRejectOrder","");
+
+    Background_2 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+        ZIndex: =2
+
+    OrderDetails_7 As SelectedOrder:
+        CustomerFullName: =Upper(OrderList.Selected.CustomerFullName)
+        StyleDescription: =Concatenate(OrderList.Selected.ItemStyle," ", OrderList.Selected.ItemName)
+        Y: =100
+        ZIndex: =3
+
+    Details_4 As Details:
+        Address1: =Upper(OrderList.Selected.DeliveryAddress1)
+        ATL: =If(OrderList.Selected.ATL = "0","NO","YES")
+        DeliveryInstructions: =OrderList.Selected.ATLInstructions
+        Email: =Upper(OrderList.Selected.EmailAddress)
+        OrderID: =OrderList.Selected.WebOrderID
+        PostCode: =Concatenate(OrderList.Selected.DeliveryAddressState," - ",Text(OrderList.Selected.DeliveryAddressPostcode))
+        Suburb: =OrderList.Selected.DeliveryAddressSuburb
+        Telephone: =OrderList.Selected.MobileNumber
+        X: =40
+        Y: =262
+        ZIndex: =4
+
+    "'Cons-Success_2' As label":
+        Align: =Align.Center
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =20
+        Text: ="This order has now been rejected"
+        Width: =640
+        Y: =282
+        ZIndex: =5
+
+    OrderConf1_3 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =18
+        Text: ="ORDER REJECTION"
+        Width: =560
+        X: =38
+        Y: =214
+        ZIndex: =6
+
+    PrintLabel1_3 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |-
+            =Set(
+                OrderProcessedTS,
+                Text(
+                    Now(),
+                    "[$-en-GB]hh:mm:ss am/pm"
+                )
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            SubmitForm(Form3_3);
+            Set(
+                Waitlabel,
+                "1"
+            );
+            Set(
+                PrintLabel,
+                "1"
+            );
+            Set(
+                SavePicVar,
+                "0"
+            );
+            Set(
+                ItemStatus,
+                Blank()
+            );
+            Reset(RejectReasonCode);
+            Set(
+                Refpic,
+                "1"
+            );
+            Set(
+                Varphotorej,
+                Blank()
+            );
+            Set(
+                Varphoto,
+                Blank()
+            );
+            Set(
+                OneflodataVar,
+                Blank()
+            );
+            ResetForm(Form3_3);
+            Navigate(
+                Home,
+                ScreenTransition.None
+            )
+        Size: =18
+        Text: ="OK"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =7
+

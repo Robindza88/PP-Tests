@@ -1,0 +1,458 @@
+PrintandShip As screen:
+    OnVisible: |-
+        =UpdateContext({boomiresponse: true});
+        UpdateContext({varOrderStatusChange: false});
+        UpdateContext({varPrintWait: Blank()});
+
+    Background_8 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+        ZIndex: =3
+
+    OrderDetails_9 As SelectedOrder:
+        CustomerFullName: =Upper(OrderList.Selected.CustomerFullName)
+        StyleDescription: =Concatenate(OrderList.Selected.ItemStyle," ", OrderList.Selected.ItemName)
+        Y: =100
+        ZIndex: =3
+
+    Details_3 As Details:
+        Address1: =Upper(OrderList.Selected.DeliveryAddress1)
+        ATL: =If(OrderList.Selected.ATL = "0","NO","YES")
+        DeliveryInstructions: =OrderList.Selected.ATLInstructions
+        Email: =Upper(OrderList.Selected.EmailAddress)
+        OrderID: =OrderList.Selected.WebOrderID
+        PostCode: =Concatenate(OrderList.Selected.DeliveryAddressState," - ",Text(OrderList.Selected.DeliveryAddressPostcode))
+        Suburb: =OrderList.Selected.DeliveryAddressSuburb
+        Telephone: =OrderList.Selected.MobileNumber
+        X: =40
+        Y: =262
+        ZIndex: =4
+
+    OrderConf1 As label:
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =48
+        Size: =18
+        Text: ="ORDER CONFIRMATION"
+        Width: =560
+        X: =38
+        Y: =214
+        ZIndex: =5
+
+    PrintLabel1 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(Oneflodata.consigmentnote = Blank(),DisplayMode.Disabled,DisplayMode.Edit)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                WaitPrintlabel,
+                "2"
+            );
+            //Busy Printing
+            UpdateContext({varPrintWait: true});
+            Set(
+                varPrintStatus,
+                'PickandShip-PrintLabel-v3-3'.Run(
+                    OrderList.Selected.CustomerFullName,
+                    varStoreDetails.StoreNumber,
+                    staffid_Text_1.Text,
+                    Oneflodata.label,
+                    Oneflodata.label
+                )
+            );
+            
+            Set(
+                PrintLabel,
+                "2"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        Size: =18
+        Text: ="Print Label"
+        Visible: =PrintLabel = "1"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =6
+
+    ReprintLabel As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            ='PickandShip-PrintLabel-v3-3'.Run(
+                OrderList.Selected.CustomerFullName,
+                varStoreDetails.StoreNumber,
+                staffid_Text_1.Text,
+                Oneflodata.label,
+                Oneflodata.label
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        Size: =18
+        Text: |-
+            ="No 
+            Reprint Label"
+        Visible: =PrintLabel = "2"
+        Width: =204
+        X: =40
+        Y: =935
+        ZIndex: =7
+
+    ShipOrder As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =UpdateContext({varBusyShipOrder: true});
+            Set(
+                varCompleteOrder,
+                'PickandShip-CompleteOrder-v3-3'.Run(CompleteOrder.Text)
+            );
+            /*Set(
+                BoomiConfirmResponse,
+                'PNS-V3-3'.PNSAPIV33(
+                    {
+                        webOrderNumber: Text(OrderList.Selected.WebOrderID),
+                        webOrderLineId: Text(OrderList.Selected.Ext1OrderID),
+                        status: "Confirmed",
+                        itemNumber: Text(OrderList.Selected.ItemCode),
+                        quantity: Text(OrderList.Selected.QuantityOrdered),
+                        storeNumber: Text(OrderList.Selected.FulfillingSiteID),
+                        staffId: staffid_Text_1.Text,
+                        consignmentID: Oneflodata.consignmentid,
+                        consignmentNote: Oneflodata.consigmentnote,
+                        ItemInternalId: "",
+                        WebOrderID: Text(OrderList.Selected.WebOrderID),
+                        OrderID: Text(OrderList.Selected.OrderID),
+                        Ext1OrderID: Text(OrderList.Selected.Ext1OrderID),
+                        Ext1OrderLineId: Text(OrderList.Selected.Ext1OrderLineId),
+                        FulfillingSiteID: Text(OrderList.Selected.FulfillingSiteID),
+                        CustCode: Text(OrderList.Selected.CustCode),
+                        SenderName: Text(OrderList.Selected.SenderName),
+                        RejectReason: "",
+                        CustomerFirstname: Text(OrderList.Selected.CustomerFirstname),
+                        CustomerLastName: Text(OrderList.Selected.CustomerLastName),
+                        CustomerFullName: Text(OrderList.Selected.CustomerFullName),
+                        DeliveryAddress1: Text(OrderList.Selected.DeliveryAddress1),
+                        DeliveryAddressSuburb: Text(OrderList.Selected.DeliveryAddressSuburb),
+                        DeliveryAddressPostcode: Text(OrderList.Selected.DeliveryAddressPostcode),
+                        DeliveryAddressState: Text(OrderList.Selected.DeliveryAddressState),
+                        DeliveryAddressCountryCode: Text(OrderList.Selected.DeliveryAddressCountryCode),
+                        EmailAddress: Text(OrderList.Selected.EmailAddress),
+                        MobileNumber: Text(OrderList.Selected.MobileNumber),
+                        QuantityOrdered: Text(OrderList.Selected.QuantityOrdered),
+                        ATL: Text(OrderList.Selected.ATL),
+                        ATLInstructions: varATLINstructions
+                    }
+                )
+            );*/
+            If(
+                varCompleteOrder.status = "Success",
+                Navigate(
+                    ShippedOrder,
+                    ScreenTransition.None
+                );
+                UpdateContext({varBusyShipOrder: false});
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                ),
+                UpdateContext({boomiresponse: false});
+                Notify("Connection Error, please try again");
+                
+            );
+        Size: =18
+        Text: |-
+            ="Yes 
+            Ship Order"
+        Visible: =PrintLabel = "2"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =8
+
+    PrintReminderLabel_3 As label:
+        Align: =Align.Center
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =20
+        Text: =""
+        Visible: =PrintLabel = "2"
+        Width: =640
+        Y: =282
+        ZIndex: =9
+
+    PrintLabelReminder As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =69
+        Size: =18
+        Text: |-
+            =If(varPrintStatus.result = "success", "Has the label printed correctly and been attached to the satchel?","Error!
+            Has the label printed?"
+            )
+        Visible: =PrintLabel = "2"
+        Width: =428
+        X: =100
+        Y: =291
+        ZIndex: =10
+
+    "'Cons-Success' As label":
+        Align: =Align.Center
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =20
+        Text: =""
+        Visible: =PrintLabel = "1" 
+        Width: =640
+        Y: =282
+        ZIndex: =11
+
+    ConsignmentSuccessful As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =64
+        Size: =20
+        Text: ="Consignment Successful"
+        Visible: =PrintLabel = "1"
+        Width: =370
+        X: =135
+        Y: =291
+        ZIndex: =12
+
+    "'Consignmnt ID' As label":
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =64
+        Size: =20
+        Text: =Oneflodata.consigmentnote
+        Visible: =PrintLabel = "1"
+        Width: =370
+        X: =135
+        Y: =346
+        ZIndex: =13
+
+    "'Consignment Error' As label":
+        Align: =Align.Center
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =18
+        Text: |-
+            =Concatenate("Error:
+            ",Oneflodata.errormessage)
+        Visible: =Oneflodata.errormessage <> "1" 
+        Width: =640
+        Y: =282
+        ZIndex: =14
+
+    PrintLabel1_4 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                OrderProcessedTS,
+                Text(
+                    Now(),
+                    "[$-en-GB]hh:mm:ss am/pm"
+                )
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            SubmitForm(Form3_3);
+            Set(
+                Waitlabel,
+                "1"
+            );
+            Set(
+                PrintLabel,
+                "1"
+            );
+            Set(
+                SavePicVar,
+                "0"
+            );
+            Set(
+                Refpic,
+                "1"
+            );
+            Set(
+                ItemStatus,
+                Blank()
+            );
+            Set(
+                Varphotoconf,
+                Blank()
+            );
+            Set(
+                Oneflodata,
+                Blank()
+            );
+            ResetForm(Form3_3);
+            Navigate(
+                Home,
+                ScreenTransition.None
+            );
+        Size: =18
+        Text: ="OK"
+        Visible: =Oneflodata.errormessage <> "1" 
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =15
+
+    PrintLabelReminder_1 As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =69
+        Size: =18
+        Text: =Concatenate("Consignment Note - ",Oneflodata.consigmentnote)
+        Visible: =PrintLabel = "2"
+        Width: =428
+        X: =100
+        Y: =351
+        ZIndex: =16
+
+    "'Consignment Error_1' As label":
+        Align: =Align.Center
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =18
+        Text: |-
+            ="Error: Please Ship Order again"
+        Visible: =boomiresponse = false
+        Width: =640
+        Y: =282
+        ZIndex: =17
+
+    ShipOrderBusy As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.77)
+        Height: =869
+        Visible: =varBusyShipOrder
+        Width: =640
+        Y: =186
+        ZIndex: =18
+
+        Image1 As image:
+            Height: =320
+            Image: =tenor
+            Width: =320
+            X: =168
+            Y: =195
+            ZIndex: =1
+
+        Timer2_18 As timer:
+            AutoStart: =true
+            Color: =Color.Black
+            Duration: =If(IsBlank(screentime),60000,screentime)
+            Fill: =RGBA(211,236,239,100%)
+            Height: =48
+            OnTimerEnd: |-
+                =If(
+                    DateDiff(
+                        lastActivityTime,
+                        Now(),
+                        TimeUnit.Milliseconds
+                    ) > Value(
+                        If(
+                            IsBlank(screentime),
+                            600000,
+                            screentime
+                        )
+                    ) - 10000,
+                    Navigate(
+                        Login,
+                        ScreenTransition.None
+                    ),
+                    false
+                )
+            Repeat: =true
+            Start: =true
+            Visible: =false
+            Width: =84
+            X: =40
+            Y: =40
+            ZIndex: =2
+
+    Busy_1 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.7)
+        Height: =870
+        Visible: =varPrintWait
+        Width: =640
+        Y: =186
+        ZIndex: =19
+
+        Spinner_3 As image:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            Fill: =RGBA(255, 255, 255, 1)
+            Height: =209
+            Image: =tenor
+            Visible: =varPrintWait
+            Width: =254
+            X: =191
+            Y: =219
+            ZIndex: =1
+
+        "'Cons-Success_6' As label":
+            Align: =Align.Center
+            Fill: =RGBA(148,196,117,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =138
+            Size: =18
+            Text: |-
+                ="Please wait...
+                Printing label"
+            Visible: =varPrintWait
+            Width: =640
+            Y: =92
+            ZIndex: =2
+
+    Timer1 As timer:
+        Duration: =10000
+        Height: =62
+        OnSelect: |-
+            =//UpdateContext({varPrintWait: false});
+            Set(PrintLabel,"1")
+        OnTimerEnd: |-
+            =UpdateContext({varPrintWait: false});
+        Start: =varPrintWait
+        Visible: =false
+        Width: =122
+        X: =518
+        Y: =116
+        ZIndex: =20
+

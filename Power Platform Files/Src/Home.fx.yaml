@@ -1,0 +1,1688 @@
+Home As screen:
+    OnVisible: |
+        =//Reset Seleced Order
+        Set(
+            GalleryVar,
+            Blank()
+        );
+        //Remove(List2, 'Pick-Form'.Current);
+        Reset([@SearchText]);
+        Reset(OrderList);
+        
+        ClearCollect(
+            List2,
+            SortByColumns(
+                Filter(
+                    StoreOnlineOrders,
+                    OrderStatus = "NEW"
+                ),
+                "OrderDate",
+                SortOrder.Descending
+            )
+        );
+        Set(
+            varATLINstructions,
+            Blank()
+        );
+        //Set Sort Variables
+        Set(
+            sortfield,
+            "OrderDate"
+        );
+        Set(
+            Sorttype,
+            SortOrder.Ascending
+        );
+        Set(
+            sortInd,
+            "3"
+        );
+        Set(
+            lastActivityTime,
+            Now()
+        );
+        Set(
+            Waitlabel,
+            "1"
+        );
+        Set(
+            PrintLabel,
+            "1"
+        );
+        Set(
+            SavePicVar,
+            "0"
+        );
+        Set(
+            Refpic,
+            "1"
+        );
+        Set(
+            ItemStatus,
+            Blank()
+        );
+        //Reset Photo Variables
+        Set(
+            Varphoto,
+            Blank()
+        );
+        Set(
+            Varphotoconf,
+            Blank()
+        );
+        Set(
+            Oneflodata,
+            Blank()
+        );
+        Set(
+            FullName,
+            Blank()
+        );
+        Set(
+            Address,
+            Blank()
+        );
+        Set(
+            Address2,
+            Blank()
+        );
+        Set(
+            SavePicVarReject,
+            Blank()
+        );
+        Set(
+            SavePicVar,
+            Blank()
+        );
+        Set(
+            SavePicVarTrimmed,
+            Blank()
+        );
+        Set(
+            SavePicVarTrimmedReject,
+            Blank()
+        );
+        Set(
+            BoomiConfirmResponse,
+            Blank()
+        );
+        Set(
+            BoomiRejectResponse,
+            Blank()
+        );
+
+    Background_3 As Background_1:
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+        ZIndex: =3
+
+    "OrderList_rejected As gallery.'BrowseLayout_Vertical_OneTextVariant_ver4.0'":
+        AccessibleLabel: ="GalleryForm"
+        BorderColor: =RGBA(211,236,239,100%)
+        Fill: =Color.White
+        FocusedBorderColor: =RGBA(132,202,204,100%)
+        Height: =755
+        Items: |-
+            =SortByColumns(
+                Filter(
+                    List4,
+                    SearchText.Text in CustomerFirstname && RejectedTimeStamp > (Today() - lastndays) && Trim(varStoreDetails.StoreNumber) in FulfillingSiteID 
+                ),
+                sortfield,
+                Sorttype
+            )
+        Layout: =Layout.Vertical
+        OnSelect: |-
+            =Set(OrderselectedTS,Text(Now(),"[$-en-GB]hh:mm:ss am/pm"));
+            Set(PrintLabel,"1");Set(Waitlabel,"1");Set(lastActivityTime,Now());Set(GalleryVar,ThisItem);
+            Navigate(ViewOrder,ScreenTransition.None);
+        ShowNavigation: =true
+        ShowScrollbar: =false
+        TabIndex: =1
+        TemplateFill: =
+        TemplatePadding: =0
+        TemplateSize: =176
+        Visible: =os="Rejected"
+        Y: =284
+        ZIndex: =4
+
+        Label5_2 As label:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            BorderThickness: =3
+            Height: =174
+            HoverBorderColor: =If(os = "New",RGBA(250,181,63,100%),Color.White)
+            HoverColor: =
+            OnSelect: =Select(Parent)
+            Size: =21
+            Text: =
+            Visible: =false
+            Width: =637
+            X: =1
+            Y: =1
+            ZIndex: =1
+
+        CustomerValue_2 As label:
+            Font: =Font.Arial
+            Height: =31
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =If(Len(ThisItem.CustomerFullName) < 20,Upper(ThisItem.CustomerFullName),Upper(Left(ThisItem.CustomerFullName,20))&"...")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =306
+            Wrap: =false
+            X: =145
+            Y: =12
+            ZIndex: =2
+
+        Separator1_2 As rectangle:
+            Fill: =RGBA(211,236,239,100%)
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =3
+
+        "'Order IDValue_3' As label":
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.WebOrderID
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =43
+            ZIndex: =4
+
+        DateValue_4 As label:
+            Color: =If(ThisItem.OrderDate < Now()-LookUp('Environment Variable Values','Environment Variable Definition'.'Display Name'="breachtime").Value && os = "New", RGBA (203,46,0,100%),Color.Black)
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Text(ThisItem.OrderDate,"dd/mm/yyyy")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =74
+            ZIndex: =5
+
+        Customer_2 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Customer"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =12
+            ZIndex: =6
+
+        "'Order ID_2' As label":
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order ID"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =43
+            ZIndex: =7
+
+        Date_2 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order Date"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =74
+            ZIndex: =8
+
+        Item_2 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Item"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =105
+            ZIndex: =9
+
+        ItemValue_11 As label:
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Concatenate(ThisItem.ItemBrand," / ",ThisItem.ItemStyle)
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =105
+            ZIndex: =10
+
+        Button4_6 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(250,181,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="New"
+            Visible: =os="New"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =11
+
+        NextArrow1_2 As icon.ChevronRight:
+            AccessibleLabel: =Self.Tooltip
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =37
+            Icon: =Icon.ChevronRight
+            OnSelect: =Select(Parent)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            TabIndex: =0
+            Tooltip: ="View item details"
+            Width: =39
+            X: =567
+            Y: =12
+            ZIndex: =12
+
+        ItemValue_12 As label:
+            Font: =Font.Arial
+            Height: =27
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.ItemName
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =136
+            ZIndex: =13
+
+        Shipped2_2 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(148,196,117,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Shipped"
+            Visible: =os="Shipped"
+            Width: =140
+            X: =467
+            Y: =13
+            ZIndex: =14
+
+        Rejected2_2 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(239,103,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Rejected"
+            Visible: =os="Rejected"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =15
+
+        Button1_2 As button:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =176
+            HoverFill: =ColorFade(Color.Transparent, -20%)
+            OnSelect: |
+                =Select(Parent);
+                Set(
+                    OrderselectedTS,
+                    Text(
+                        Now(),
+                        "[$-en-GB]hh:mm:ss am/pm"
+                    )
+                );
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    Waitlabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                );
+                Set(
+                    GalleryVar,
+                    ThisItem
+                );
+                Navigate(
+                    ViewOrder_1,
+                    ScreenTransition.None
+                );
+            Size: =24
+            Text: ="Button"
+            Width: =638
+            X: =2
+            ZIndex: =16
+
+    "OrderList_shipped As gallery.'BrowseLayout_Vertical_OneTextVariant_ver4.0'":
+        AccessibleLabel: ="GalleryForm"
+        BorderColor: =RGBA(211,236,239,100%)
+        Fill: =Color.White
+        FocusedBorderColor: =RGBA(132,202,204,100%)
+        Height: =755
+        Items: |-
+            =SortByColumns(
+                Filter(
+                    List3,
+                    //SearchText.Text in CustomerFirstname  && Trim(varStoreDetails.StoreNumber) = FulfillingSiteID 
+                    SearchText.Text in CustomerFirstname  && Trim(varStoreDetails.StoreNumber) in FulfillingSiteID 
+                ),
+                sortfield,
+                Sorttype
+            )
+        Layout: =Layout.Vertical
+        OnSelect: |-
+            =Set(OrderselectedTS,Text(Now(),"[$-en-GB]hh:mm:ss am/pm"));
+            Set(PrintLabel,"1");Set(Waitlabel,"1");Set(lastActivityTime,Now());Set(GalleryVar,ThisItem);
+            Navigate(ViewOrder,ScreenTransition.None);
+        ShowNavigation: =true
+        ShowScrollbar: =false
+        TabIndex: =1
+        TemplateFill: =
+        TemplatePadding: =0
+        TemplateSize: =176
+        Visible: =os="Shipped"
+        Y: =284
+        ZIndex: =5
+
+        CustomerValue_1 As label:
+            Font: =Font.Arial
+            Height: =31
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =If(Len(ThisItem.CustomerFullName) < 20,Upper(ThisItem.CustomerFullName),Upper(Left(ThisItem.CustomerFullName,20))&"...")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =306
+            Wrap: =false
+            X: =145
+            Y: =12
+            ZIndex: =1
+
+        Separator1_1 As rectangle:
+            Fill: =RGBA(211,236,239,100%)
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =2
+
+        "'Order IDValue_2' As label":
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.WebOrderID
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =43
+            ZIndex: =3
+
+        DateValue_3 As label:
+            Color: =If(ThisItem.OrderDate < Now()-LookUp('Environment Variable Values','Environment Variable Definition'.'Display Name'="breachtime").Value && os = "New", RGBA (203,46,0,100%),Color.Black)
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Text(ThisItem.OrderDate,"dd/mm/yyyy")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =74
+            ZIndex: =4
+
+        Customer_1 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Customer"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =12
+            ZIndex: =5
+
+        "'Order ID_1' As label":
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order ID"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =43
+            ZIndex: =6
+
+        Date_1 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order Date"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =74
+            ZIndex: =7
+
+        Item_1 As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Item"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =105
+            ZIndex: =8
+
+        ItemValue_9 As label:
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Concatenate(ThisItem.ItemBrand," / ",ThisItem.ItemStyle)
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =105
+            ZIndex: =9
+
+        Button4_5 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(250,181,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="New"
+            Visible: =os="New"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =10
+
+        NextArrow1_1 As icon.ChevronRight:
+            AccessibleLabel: =Self.Tooltip
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =37
+            Icon: =Icon.ChevronRight
+            OnSelect: =Select(Parent)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            TabIndex: =0
+            Tooltip: ="View item details"
+            Width: =39
+            X: =567
+            Y: =12
+            ZIndex: =11
+
+        ItemValue_10 As label:
+            Font: =Font.Arial
+            Height: =27
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.ItemName
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =136
+            ZIndex: =12
+
+        Shipped2_1 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(148,196,117,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Shipped"
+            Visible: =os="Shipped"
+            Width: =140
+            X: =467
+            Y: =13
+            ZIndex: =13
+
+        Rejected2_1 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(239,103,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Rejected"
+            Visible: =os="Rejected"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =14
+
+        Label5_1 As label:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            BorderThickness: =3
+            Height: =174
+            HoverBorderColor: =If(os = "New",RGBA(250,181,63,100%),Color.White)
+            HoverColor: =
+            OnSelect: =Select(Parent)
+            Size: =21
+            Text: =
+            Visible: =false
+            Width: =637
+            X: =1
+            Y: =1
+            ZIndex: =15
+
+        Button1_1 As button:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =176
+            HoverFill: =ColorFade(Color.Transparent, -20%)
+            OnSelect: |
+                =Select(Parent);
+                Set(
+                    OrderselectedTS,
+                    Text(
+                        Now(),
+                        "[$-en-GB]hh:mm:ss am/pm"
+                    )
+                );
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    Waitlabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                );
+                Set(
+                    GalleryVar,
+                    ThisItem
+                );
+                Navigate(
+                    ViewOrder_1,
+                    ScreenTransition.None
+                );
+            Size: =24
+            Text: ="Button"
+            Width: =638
+            X: =2
+            ZIndex: =16
+
+    "OrderList As gallery.'BrowseLayout_Vertical_OneTextVariant_ver4.0'":
+        AccessibleLabel: ="GalleryForm"
+        BorderColor: =RGBA(211,236,239,100%)
+        Default: ={}
+        Fill: =Color.White
+        FocusedBorderColor: =RGBA(132,202,204,100%)
+        Height: =755
+        Items: |-
+            =If('debug-mode'.Value = true,
+            SortByColumns(
+                Filter(
+                    List2,
+                    (SearchText.Text in CustomerFirstname ||SearchText.Text in WebOrderID) && "NEW" in OrderStatus 
+                ),
+                sortfield,
+                Sorttype
+            ),
+            SortByColumns(
+                Filter(
+                    List2,
+                   ( SearchText.Text in CustomerFirstname ||SearchText.Text in WebOrderID) && "NEW" in OrderStatus && Trim(varStoreDetails.StoreNumber) in Trim(FulfillingSiteID) ),
+                sortfield,
+                Sorttype
+            ))
+        Layout: =Layout.Vertical
+        OnSelect: |
+            =/*Set(
+                OrderselectedTS,
+                Text(
+                    Now(),
+                    "[$-en-GB]hh:mm:ss am/pm"
+                )
+            );
+            Set(
+                PrintLabel,
+                "1"
+            );
+            Set(
+                Waitlabel,
+                "1"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            Set(
+                GalleryVar,
+                ThisItem
+            );
+            Navigate(
+                ViewOrder_1,
+                ScreenTransition.None
+            );*/
+        ShowNavigation: =true
+        ShowScrollbar: =false
+        TabIndex: =1
+        TemplateFill: =
+        TemplatePadding: =0
+        TemplateSize: =176
+        Visible: =os="New"
+        Y: =284
+        ZIndex: =6
+
+        Label5 As label:
+            BorderColor: =RGBA(0, 0, 0, 0)
+            BorderThickness: =3
+            Height: =174
+            HoverBorderColor: =If(os = "New",RGBA(250,181,63,100%),Color.White)
+            HoverColor: =
+            OnSelect: |-
+                =Select(Parent);
+                //Set(GalleryVar,ThisItem)
+            Size: =21
+            Text: =
+            Visible: =false
+            Width: =637
+            X: =1
+            Y: =1
+            ZIndex: =1
+
+        CustomerValue As label:
+            Font: =Font.Arial
+            Height: =31
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =If(Len(ThisItem.CustomerFullName) < 20,Upper(ThisItem.CustomerFullName),Upper(Left(ThisItem.CustomerFullName,20))&"...")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =306
+            Wrap: =false
+            X: =145
+            Y: =12
+            ZIndex: =2
+
+        Separator1 As rectangle:
+            Fill: =RGBA(211,236,239,100%)
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =3
+
+        "'Order IDValue_1' As label":
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.WebOrderID
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =43
+            ZIndex: =4
+
+        DateValue_2 As label:
+            Color: =If(ThisItem.OrderDate < Now()-LookUp('Environment Variable Values','Environment Variable Definition'.'Display Name'="breachtime").Value && os = "New", RGBA (203,46,0,100%),Color.Black)
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Text(ThisItem.OrderDate,"dd/mm/yyyy")
+            VerticalAlign: =VerticalAlign.Top
+            Width: =263
+            X: =145
+            Y: =74
+            ZIndex: =5
+
+        Customer As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Customer"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =12
+            ZIndex: =6
+
+        "'Order ID' As label":
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order ID"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =43
+            ZIndex: =7
+
+        Date As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Order Date"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =74
+            ZIndex: =8
+
+        Item As label:
+            Align: =Align.Right
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: ="Item"
+            VerticalAlign: =VerticalAlign.Top
+            Width: =106
+            X: =14
+            Y: =105
+            ZIndex: =9
+
+        ItemValue_7 As label:
+            Font: =Font.Arial
+            Height: =22
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =Concatenate(ThisItem.ItemBrand," / ",ThisItem.ItemStyle)
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =105
+            ZIndex: =10
+
+        Button4_4 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(250,181,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: =ThisItem.Ext1OrderLineId & " New"
+            Visible: =os="New"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =11
+
+        NextArrow1 As icon.ChevronRight:
+            AccessibleLabel: =Self.Tooltip
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =110
+            Icon: =Icon.ChevronRight
+            OnSelect: =Select(Parent)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            TabIndex: =0
+            Tooltip: ="View item details"
+            Width: =63
+            X: =505
+            Y: =34
+            ZIndex: =12
+
+        ItemValue_8 As label:
+            Font: =Font.Arial
+            Height: =27
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.ItemName
+            VerticalAlign: =VerticalAlign.Top
+            Width: =450
+            X: =145
+            Y: =136
+            ZIndex: =13
+
+        Shipped2 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(148,196,117,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Shipped"
+            Visible: =os="Shipped"
+            Width: =140
+            X: =467
+            Y: =13
+            ZIndex: =14
+
+        Rejected2 As button:
+            Color: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(239,103,63,100%)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Normal
+            Height: =36
+            HoverFill: =ColorFade(Self.Fill, -15%)
+            OnSelect: =Select(Parent)
+            Text: ="Rejected"
+            Visible: =os="Rejected"
+            Width: =140
+            X: =467
+            Y: =12
+            ZIndex: =15
+
+        Button1 As button:
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =176
+            HoverFill: =ColorFade(Color.Transparent, -20%)
+            OnSelect: |
+                =Select(Parent);
+                Set(
+                    OrderselectedTS,
+                    Text(
+                        Now(),
+                        "[$-en-GB]hh:mm:ss am/pm"
+                    )
+                );
+                Set(
+                    PrintLabel,
+                    "1"
+                );
+                Set(
+                    Waitlabel,
+                    "1"
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                );
+                Set(
+                    GalleryVar,
+                    ThisItem
+                );
+                Navigate(
+                    ViewOrder_1,
+                    ScreenTransition.None
+                );
+            Size: =24
+            Text: ="Button"
+            Width: =638
+            ZIndex: =16
+
+    Label23 As label:
+        Fill: =RGBA(132,202,204,100%)
+        Height: =86
+        Size: =21
+        Text: =
+        Width: =640
+        Y: =97
+        ZIndex: =7
+
+    New As button:
+        BorderColor: =If(os = "New",RGBA (114,112,112,100%),Self.Fill)
+        BorderThickness: =4
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(250,181,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Normal
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |-
+            =Set(
+                os,
+                "New"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            ClearCollect(
+                List2,
+                SortByColumns(
+                    Filter(
+                        StoreOnlineOrders,
+                        OrderStatus = "NEW"
+                    ),
+                    "OrderDate",
+                    SortOrder.Descending
+                )
+            )
+        PressedBorderColor: =Color.Black
+        Text: ="New"
+        Width: =150
+        X: =40
+        Y: =213
+        ZIndex: =8
+
+    NewOrderNumber As button:
+        Fill: =RGBA(203,46,0,100%)
+        Height: =35
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        RadiusBottomLeft: =20
+        RadiusBottomRight: =20
+        RadiusTopLeft: =20
+        RadiusTopRight: =20
+        Size: =10
+        Text: =CountIf(List2,OrderStatus = "NEW" && Trim(varStoreDetails.StoreNumber) in Trim(FulfillingSiteID))
+        Visible: =If(CountIf(List2,OrderStatus = "NEW") > 0,true,false)
+        Width: =50
+        X: =176
+        Y: =200
+        ZIndex: =9
+
+    Shipped As button:
+        BorderColor: =If(os = "Shipped",RGBA (114,112,112,100%),Self.Fill)
+        BorderThickness: =4
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Normal
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |-
+            =Set(
+                os,
+                "Shipped"
+            );
+            Set(
+                Sorttype,
+                SortOrder.Descending
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            ClearCollect(
+                List3,
+                SortByColumns(
+                    Filter(
+                        StoreOnlineOrders,
+                        OrderStatus = "Shipped"
+                    ),
+                    "CompletedTime",
+                    SortOrder.Descending
+                )
+            )
+        Text: ="Shipped"
+        Width: =150
+        X: =245
+        Y: =213
+        ZIndex: =10
+
+    Rejected As button:
+        BorderColor: =If(os = "Rejected",RGBA (114,112,112,100%),Self.Fill)
+        BorderThickness: =4
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Normal
+        HoverFill: =ColorFade(Color.OrangeRed, -20%)
+        OnSelect: |-
+            =Set(
+                os,
+                "Rejected"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            ClearCollect(
+                List4,
+                SortByColumns(
+                    Filter(
+                        StoreOnlineOrders,
+                        OrderStatus = "Rejected"
+                    ),
+                    "RejectedTimeStamp",
+                    SortOrder.Descending
+                )
+            )
+        Text: ="Rejected"
+        Width: =150
+        X: =450
+        Y: =213
+        ZIndex: =11
+
+    SearchText As text:
+        AccessibleLabel: ="Search text"
+        BorderColor: =RGBA(128, 128, 128, 1)
+        BorderThickness: =0
+        Default: =""
+        DelayOutput: =true
+        Height: =55
+        HoverBorderColor: =RGBA(219, 219, 219, 1)
+        HoverFill: =RGBA(179, 179, 179, 1)
+        OnChange: = Set(lastActivityTime, Now());
+        RadiusBottomLeft: =10
+        RadiusBottomRight: =10
+        RadiusTopLeft: =10
+        RadiusTopRight: =10
+        Size: =21
+        Width: =268
+        X: =77
+        Y: =112
+        ZIndex: =12
+
+    Search As icon.Search:
+        Color: =RGBA(179, 179, 179, 1)
+        Height: =35
+        Icon: =Icon.Search
+        Width: =37
+        X: =299
+        Y: =122
+        ZIndex: =13
+
+    Sort As image:
+        BorderColor: =RGBA(132,202,204,100%)
+        BorderStyle: =BorderStyle.None
+        Height: =50
+        HoverBorderColor: =Color.Black
+        HoverFill: =
+        Image: ='Icon - Sort'
+        OnSelect: |-
+            =UpdateContext({sortmenu:!sortmenu});Set(lastActivityTime, Now());
+        TabIndex: =1
+        Width: =70
+        X: =398
+        Y: =113
+        ZIndex: =14
+
+    Refresh As image:
+        BorderColor: =RGBA(132,202,204,100%)
+        BorderStyle: =BorderStyle.None
+        Height: =50
+        HoverBorderColor: =Color.Black
+        Image: ='Icon - Refresh'
+        OnSelect: |
+            =Reset([@SearchText]);
+            ClearCollect(
+                List2,
+                SortByColumns(
+                    Filter(
+                        StoreOnlineOrders,
+                        OrderStatus = "NEW"
+                    ),
+                    "OrderDate",
+                    SortOrder.Descending
+                )
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        TabIndex: =1
+        Width: =70
+        X: =492
+        Y: =113
+        ZIndex: =15
+
+    Hamburger2 As image:
+        Height: =50
+        Image: ='Icon - Hamburger'
+        Visible: =false
+        Width: =70
+        X: =570
+        Y: =113
+        ZIndex: =16
+
+    DisplaySort4 As image:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        Height: =30
+        Image: ='Icon - Sort AZ'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "1" && os = "New"
+        Width: =25
+        X: =52
+        Y: =218
+        ZIndex: =17
+
+    DisplaySort3 As image:
+        Height: =30
+        Image: ='Icon - Sort ZA'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "2"  && os = "New"
+        Width: =25
+        X: =52
+        Y: =218
+        ZIndex: =18
+
+    DisplaySort2 As image:
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Height: =30
+        Image: ='Icon - Sort Newest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "3" && os = "New"
+        Width: =25
+        X: =52
+        Y: =218
+        ZIndex: =19
+
+    DisplaySort1 As image:
+        Height: =30
+        Image: ='Icon - Sort Oldest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd="4" && os = "New"
+        Width: =25
+        X: =52
+        Y: =218
+        ZIndex: =20
+
+    DisplaySort4_1 As image:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        Height: =30
+        Image: ='Icon - Sort AZ'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "1" && os = "Shipped"
+        Width: =25
+        X: =251
+        Y: =218
+        ZIndex: =21
+
+    DisplaySort3_1 As image:
+        Height: =30
+        Image: ='Icon - Sort ZA'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "2"  && os = "Shipped"
+        Width: =25
+        X: =251
+        Y: =218
+        ZIndex: =22
+
+    DisplaySort2_1 As image:
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Height: =30
+        Image: ='Icon - Sort Newest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "3" && os = "Shipped"
+        Width: =25
+        X: =251
+        Y: =218
+        ZIndex: =23
+
+    DisplaySort1_1 As image:
+        Height: =30
+        Image: ='Icon - Sort Oldest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd="4" && os = "Shipped"
+        Width: =25
+        X: =251
+        Y: =218
+        ZIndex: =24
+
+    DisplaySort4_2 As image:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        Height: =30
+        Image: ='Icon - Sort AZ'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "1" && os = "Rejected"
+        Width: =25
+        X: =458
+        Y: =218
+        ZIndex: =25
+
+    DisplaySort3_2 As image:
+        Height: =30
+        Image: ='Icon - Sort ZA'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "2"  && os = "Rejected"
+        Width: =25
+        X: =458
+        Y: =218
+        ZIndex: =26
+
+    DisplaySort2_2 As image:
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Height: =30
+        Image: ='Icon - Sort Newest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd = "3" && os = "Rejected"
+        Width: =25
+        X: =458
+        Y: =218
+        ZIndex: =27
+
+    DisplaySort1_2 As image:
+        Height: =30
+        Image: ='Icon - Sort Oldest'
+        OnSelect: =Set(os,"New")
+        TabIndex: =1
+        Visible: =sortInd="4" && os = "Rejected"
+        Width: =25
+        X: =458
+        Y: =218
+        ZIndex: =28
+
+    SortLabel As label:
+        BorderColor: =RGBA(211,236,239,100%)
+        BorderThickness: =1
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =360
+        Size: =21
+        Text: =
+        Visible: =sortmenu = true
+        Width: =396
+        X: =219
+        Y: =183
+        ZIndex: =29
+
+    Triangle1 As triangle:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =54
+        Visible: =sortmenu = true
+        Width: =52
+        X: =398
+        Y: =157
+        ZIndex: =30
+
+    SortButton1 As button:
+        Align: =Align.Left
+        BorderThickness: =0
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =90
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |
+            =Set(
+                sortfield,
+                "CustomerFullName"
+            );
+            Set(
+                Sorttype,
+                SortOrder.Ascending
+            );
+            UpdateContext({sortmenu: !sortmenu});
+            Set(
+                sortInd,
+                "1"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Text: ="Sort by Item (A-Z)"
+        Visible: =sortmenu = true
+        Width: =308
+        X: =307
+        Y: =183
+        ZIndex: =31
+
+    SortButton2 As button:
+        Align: =Align.Left
+        BorderThickness: =0
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =90
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |
+            =Set(
+                sortfield,
+                "CustomerFullName"
+            );
+            Set(
+                Sorttype,
+                SortOrder.Descending
+            );
+            UpdateContext({sortmenu: !sortmenu});
+            Set(
+                sortInd,
+                "2"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Text: ="Sort by Item (Z-A)"
+        Visible: =sortmenu = true
+        Width: =308
+        X: =307
+        Y: =273
+        ZIndex: =32
+
+    SortButton3 As button:
+        Align: =Align.Left
+        BorderThickness: =0
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =90
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |
+            =Set(
+                sortfield,
+                "OrderDate"
+            );
+            Set(
+                Sorttype,
+                SortOrder.Ascending
+            );
+            Set(
+                sortInd,
+                "3"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+            UpdateContext({sortmenu: !sortmenu});
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Text: ="Sort by Date (Oldest)"
+        Visible: =sortmenu = true
+        Width: =308
+        X: =307
+        Y: =363
+        ZIndex: =33
+
+    SortButton4 As button:
+        Align: =Align.Left
+        BorderThickness: =0
+        Color: =RGBA(0, 0, 0, 1)
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =90
+        HoverFill: =ColorFade(Self.Fill, -15%)
+        OnSelect: |
+            =Set(
+                sortfield,
+                "OrderDate"
+            );
+            Set(
+                Sorttype,
+                SortOrder.Descending
+            );
+            UpdateContext({sortmenu: !sortmenu});
+            Set(
+                sortInd,
+                "4"
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        RadiusBottomLeft: =0
+        RadiusBottomRight: =0
+        RadiusTopLeft: =0
+        RadiusTopRight: =0
+        Text: ="Sort by Date (Newest)"
+        Visible: =sortmenu = true
+        Width: =308
+        X: =307
+        Y: =453
+        ZIndex: =34
+
+    Sort2 As image:
+        BorderColor: =RGBA(255, 255, 255, 1)
+        Height: =50
+        Image: ='Icon - Sort AZ'
+        OnSelect: |-
+            =Set(sortfield,"CustomerFullName");Set(Sorttype,SortOrder.Descending);UpdateContext({sortmenu:!sortmenu});Set(sortInd,"1");
+        TabIndex: =1
+        Visible: =sortmenu = true
+        Width: =70
+        X: =229
+        Y: =203
+        ZIndex: =35
+
+    Sort3 As image:
+        Height: =50
+        Image: ='Icon - Sort ZA'
+        OnSelect: |-
+            =Set(sortfield,"CustomerFullName");Set(Sorttype,SortOrder.Ascending);UpdateContext({sortmenu:!sortmenu});Set(sortInd,"2");
+        TabIndex: =1
+        Visible: =sortmenu = true
+        Width: =70
+        X: =229
+        Y: =293
+        ZIndex: =36
+
+    Sort4 As image:
+        Height: =50
+        Image: ='Icon - Sort Newest'
+        OnSelect: |-
+            =Set(sortfield,"OrderDate");Set(Sorttype,SortOrder.Descending);UpdateContext({sortmenu:!sortmenu});Set(sortInd,"3");
+        TabIndex: =1
+        Visible: =sortmenu = true
+        Width: =70
+        X: =229
+        Y: =383
+        ZIndex: =37
+
+    Sort5 As image:
+        Height: =50
+        Image: ='Icon - Sort Oldest'
+        OnSelect: |-
+            =Set(sortfield,"OrderDate");Set(Sorttype,SortOrder.Ascending);UpdateContext({sortmenu:!sortmenu});Set(sortInd,"4");
+        TabIndex: =1
+        Visible: =sortmenu = true
+        Width: =70
+        X: =229
+        Y: =473
+        ZIndex: =38
+
+    Timer2_13 As timer:
+        AutoStart: =true
+        Color: =Color.Black
+        Duration: =If(IsBlank(screentime),600000,screentime)
+        Fill: =RGBA(211,236,239,100%)
+        Height: =48
+        OnTimerEnd: |-
+            =If(
+                DateDiff(
+                    lastActivityTime,
+                    Now(),
+                    TimeUnit.Milliseconds
+                ) > Value(
+                    If(
+                        IsBlank(screentime),
+                        600000,
+                        screentime
+                    )
+                ) - 10000,
+                Navigate(
+                    Login,
+                    ScreenTransition.None
+                ),
+                false
+            )
+        Repeat: =true
+        Start: =true
+        Visible: =false
+        Width: =84
+        X: =556
+        Y: =119
+        ZIndex: =39
+
+    Label1 As label:
+        Height: =78
+        Size: =12
+        Text: =varStoreDetails.StoreNumber
+        Visible: =User().Email = "powerappsadmin@munrofg.com"
+        Width: =60
+        X: =575
+        Y: =97
+        ZIndex: =40
+

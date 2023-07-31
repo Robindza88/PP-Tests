@@ -1,0 +1,119 @@
+<application xmlns:xml="http://www.w3.org/XML/1998/namespace" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:service="https://australia-001.azure-apim.net/apim/pns-5fpickandshipv33-5f8b90d38903bf5fe4" xmlns:siena="http://schemas.microsoft.com/MicrosoftProjectSiena/WADL/2014/11" siena:serviceId="Defaulttitle" xmlns="http://wadl.dev.java.net/2009/02">
+  <doc title="Default title">PickandShipV3.3</doc>
+  <grammars>
+    <jsonTypes targetNamespace="https://australia-001.azure-apim.net/apim/pns-5fpickandshipv33-5f8b90d38903bf5fe4" xmlns="http://schemas.microsoft.com/MicrosoftProjectSiena/WADL/2014/11">
+      <string name="PickandShipv33_param_body_def_webOrderNumber_def" />
+      <string name="PickandShipv33_param_body_def_webOrderLineId_def" />
+      <string name="PickandShipv33_param_body_def_status_def" />
+      <string name="PickandShipv33_param_body_def_itemNumber_def" />
+      <string name="PickandShipv33_param_body_def_quantity_def" />
+      <string name="PickandShipv33_param_body_def_storeNumber_def" />
+      <string name="PickandShipv33_param_body_def_staffId_def" />
+      <string name="PickandShipv33_param_body_def_consignmentID_def" />
+      <string name="PickandShipv33_param_body_def_consignmentNote_def" />
+      <string name="PickandShipv33_param_body_def_WebOrderID_def" />
+      <string name="PickandShipv33_param_body_def_OrderID_def" />
+      <string name="PickandShipv33_param_body_def_Ext1OrderID_def" />
+      <string name="PickandShipv33_param_body_def_Ext1OrderLineId_def" />
+      <string name="PickandShipv33_param_body_def_FulfillingSiteID_def" />
+      <string name="PickandShipv33_param_body_def_CustCode_def" />
+      <string name="PickandShipv33_param_body_def_SenderName_def" />
+      <string name="PickandShipv33_param_body_def_CustomerFirstname_def" />
+      <string name="PickandShipv33_param_body_def_CustomerLastName_def" />
+      <string name="PickandShipv33_param_body_def_CustomerFullName_def" />
+      <string name="PickandShipv33_param_body_def_DeliveryAddress1_def" />
+      <string name="PickandShipv33_param_body_def_DeliveryAddressSuburb_def" />
+      <string name="PickandShipv33_param_body_def_DeliveryAddressPostcode_def" />
+      <string name="PickandShipv33_param_body_def_DeliveryAddressState_def" />
+      <string name="PickandShipv33_param_body_def_DeliveryAddressCountryCode_def" />
+      <string name="PickandShipv33_param_body_def_EmailAddress_def" />
+      <string name="PickandShipv33_param_body_def_MobileNumber_def" />
+      <string name="PickandShipv33_param_body_def_QuantityOrdered_def" />
+      <string name="PickandShipv33_param_body_def_ATL_def" />
+      <string name="PickandShipv33_param_body_def_ATLInstructions_def" />
+      <string name="PickandShipv33_param_body_def_RejectReason_def" />
+      <object name="PickandShipv33_param_body_def">
+        <property name="webOrderNumber" type="string" />
+        <property name="webOrderLineId" type="string" />
+        <property name="status" type="string" />
+        <property name="itemNumber" type="string" />
+        <property name="quantity" type="string" />
+        <property name="storeNumber" type="string" />
+        <property name="staffId" type="string" />
+        <property name="consignmentID" type="string" />
+        <property name="consignmentNote" type="string" />
+        <property name="WebOrderID" type="string" />
+        <property name="OrderID" type="string" />
+        <property name="Ext1OrderID" type="string" />
+        <property name="Ext1OrderLineId" type="string" />
+        <property name="FulfillingSiteID" type="string" />
+        <property name="CustCode" type="string" />
+        <property name="SenderName" type="string" />
+        <property name="CustomerFirstname" type="string" />
+        <property name="CustomerLastName" type="string" />
+        <property name="CustomerFullName" type="string" />
+        <property name="DeliveryAddress1" type="string" />
+        <property name="DeliveryAddressSuburb" type="string" />
+        <property name="DeliveryAddressPostcode" type="string" />
+        <property name="DeliveryAddressState" type="string" />
+        <property name="DeliveryAddressCountryCode" type="string" />
+        <property name="EmailAddress" type="string" />
+        <property name="MobileNumber" type="string" />
+        <property name="QuantityOrdered" type="string" />
+        <property name="ATL" type="string" />
+        <property name="ATLInstructions" type="string" />
+        <property name="RejectReason" type="string" />
+      </object>
+    </jsonTypes>
+  </grammars>
+  <resources siena:authenticationProviderHref="#PowerAppAuth" base="https://australia-001.azure-apim.net/apim/pns-5fpickandshipv33-5f8b90d38903bf5fe4">
+    <resource path="/{connectionId}/ws/rest/Weborder/Update/WebOrder/v2">
+      <param style="template" name="connectionId" type="xs:string" required="true" />
+      <method siena:requiresAuthentication="true" name="POST" id="PickandShipv33" siena:isDeprecated="false">
+        <doc title="PickandShip-v3-3&#xA;PickandShip-v3-3" />
+        <request>
+          <representation mediaType="application/json">
+            <param style="plain" name="webOrderNumber" path="/webOrderNumber" type="xs:string" />
+            <param style="plain" name="webOrderLineId" path="/webOrderLineId" type="xs:string" />
+            <param style="plain" name="status" path="/status" type="xs:string" />
+            <param style="plain" name="itemNumber" path="/itemNumber" type="xs:string" />
+            <param style="plain" name="quantity" path="/quantity" type="xs:string" />
+            <param style="plain" name="storeNumber" path="/storeNumber" type="xs:string" />
+            <param style="plain" name="staffId" path="/staffId" type="xs:string" />
+            <param style="plain" name="consignmentID" path="/consignmentID" type="xs:string" />
+            <param style="plain" name="consignmentNote" path="/consignmentNote" type="xs:string" />
+            <param style="plain" name="WebOrderID" path="/WebOrderID" type="xs:string" />
+            <param style="plain" name="OrderID" path="/OrderID" type="xs:string" />
+            <param style="plain" name="Ext1OrderID" path="/Ext1OrderID" type="xs:string" />
+            <param style="plain" name="Ext1OrderLineId" path="/Ext1OrderLineId" type="xs:string" />
+            <param style="plain" name="FulfillingSiteID" path="/FulfillingSiteID" type="xs:string" />
+            <param style="plain" name="CustCode" path="/CustCode" type="xs:string" />
+            <param style="plain" name="SenderName" path="/SenderName" type="xs:string" />
+            <param style="plain" name="CustomerFirstname" path="/CustomerFirstname" type="xs:string" />
+            <param style="plain" name="CustomerLastName" path="/CustomerLastName" type="xs:string" />
+            <param style="plain" name="CustomerFullName" path="/CustomerFullName" type="xs:string" />
+            <param style="plain" name="DeliveryAddress1" path="/DeliveryAddress1" type="xs:string" />
+            <param style="plain" name="DeliveryAddressSuburb" path="/DeliveryAddressSuburb" type="xs:string" />
+            <param style="plain" name="DeliveryAddressPostcode" path="/DeliveryAddressPostcode" type="xs:string" />
+            <param style="plain" name="DeliveryAddressState" path="/DeliveryAddressState" type="xs:string" />
+            <param style="plain" name="DeliveryAddressCountryCode" path="/DeliveryAddressCountryCode" type="xs:string" />
+            <param style="plain" name="EmailAddress" path="/EmailAddress" type="xs:string" />
+            <param style="plain" name="MobileNumber" path="/MobileNumber" type="xs:string" />
+            <param style="plain" name="QuantityOrdered" path="/QuantityOrdered" type="xs:string" />
+            <param style="plain" name="ATL" path="/ATL" type="xs:string" />
+            <param style="plain" name="ATLInstructions" path="/ATLInstructions" type="xs:string" />
+            <param style="plain" name="RejectReason" path="/RejectReason" type="xs:string" />
+          </representation>
+        </request>
+      </method>
+    </resource>
+  </resources>
+  <authenticationProviders xmlns="http://schemas.microsoft.com/MicrosoftProjectSiena/WADL/2014/11">
+    <connectionProvider id="PowerAppAuth" siena:connectionProviderId="pns-5fpickandshipv33-5f8b90d38903bf5fe4" />
+  </authenticationProviders>
+  <template xmlns="http://schemas.microsoft.com/MicrosoftProjectSiena/WADL/2014/11">
+    <variable name="connectionId">
+      <modifyParams style="template" name="connectionId" attribute="fixed" />
+    </variable>
+  </template>
+</application>

@@ -1,0 +1,1318 @@
+ViewOrder_1 As screen:
+    OnVisible: |
+        =//Set(GalleryVar,GalleryWebOrder.Selected);
+        UpdateContext({varOrderStatusChange: false});
+        Set(
+            showerrorlabel,
+            "2"
+        );
+
+    Background_7 As Background_1:
+        HomeScreenNav: =Home
+        LoginScreenNav: =Login
+        StaffIDValue: =StaffNumber
+
+    OrderDetails_3 As SelectedOrder:
+        CustomerFullName: =Upper(GalleryVar.CustomerFullName)
+        StyleDescription: =Concatenate(GalleryVar.ItemStyle," ", GalleryVar.ItemName)
+        Y: =100
+        ZIndex: =2
+
+    "GalleryWebOrder As gallery.'BrowseLayout_Vertical_TwoTextVariant_ver4.0'":
+        Default: |-
+            =
+            LookUp(Self.AllItems,WebOrderID = GalleryVar.WebOrderID && Ext1OrderLineId = GalleryVar.Ext1OrderLineId)
+        Height: =685
+        Items: |-
+            =Switch(os,
+            "New",
+            Filter(StoreOnlineOrders,WebOrderID = OrderList.Selected.WebOrderID && OrderStatus = "NEW"),
+            "NEW",
+            Filter(StoreOnlineOrders,WebOrderID = OrderList.Selected.WebOrderID && OrderStatus = "NEW")
+            )
+        Layout: =Layout.Vertical
+        OnSelect: |-
+            =Set(
+                GalleryVar,
+                ThisItem
+            );
+        TemplateFill: =If(ThisItem.IsSelected,RGBA(132,202,204,1), RGBA(0, 0, 0, 0))
+        TemplatePadding: =0
+        TemplateSize: =170
+        Width: =172
+        Y: =231
+        ZIndex: =3
+
+        Title2 As label:
+            FontWeight: =FontWeight.Bold
+            Height: =25
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =7
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =14
+            Text: =ThisItem.WebOrderID
+            VerticalAlign: =VerticalAlign.Top
+            Width: =172
+            Y: =6
+            ZIndex: =1
+
+        NextArrow3 As icon.ChevronRight:
+            AccessibleLabel: =Self.Tooltip
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =148
+            Icon: =Icon.ChevronRight
+            OnSelect: =Select(Parent)
+            PaddingBottom: =10
+            PaddingLeft: =10
+            PaddingRight: =10
+            PaddingTop: =10
+            TabIndex: =0
+            Tooltip: ="View item details"
+            Width: =49
+            X: =123
+            ZIndex: =2
+
+        Separator3 As rectangle:
+            BorderColor: =RGBA(0, 0, 0, 1)
+            Fill: =RGBA(0, 0, 0, 1)
+            Height: =1
+            OnSelect: =Select(Parent)
+            Width: =Parent.TemplateWidth
+            Y: =Parent.TemplateHeight - 1
+            ZIndex: =3
+
+        Title2_1 As label:
+            FontWeight: =FontWeight.Bold
+            Height: =31
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =15
+            Text: =ThisItem.WebOrderID
+            VerticalAlign: =VerticalAlign.Top
+            Visible: =false
+            Width: =154
+            X: =22
+            Y: =103
+            ZIndex: =4
+
+        Subtitle2 As label:
+            FontWeight: =FontWeight.Bold
+            Height: =76
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =7
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =13
+            Text: =ThisItem.CustomerFullName
+            VerticalAlign: =VerticalAlign.Top
+            Width: =172
+            Y: =93
+            ZIndex: =6
+
+        Title2_3 As label:
+            FontWeight: =FontWeight.Bold
+            Height: =25
+            OnSelect: =Select(Parent)
+            PaddingBottom: =0
+            PaddingLeft: =7
+            PaddingRight: =0
+            PaddingTop: =0
+            Size: =13
+            Text: =ThisItem.Ext1OrderLineId
+            VerticalAlign: =VerticalAlign.Top
+            Width: =172
+            Y: =41
+            ZIndex: =7
+
+        Button3 As button:
+            DisabledFill: =Color.Transparent
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =169
+            HoverFill: =Color.Transparent
+            OnSelect: |-
+                =Select(Parent);
+                Set(
+                    GalleryVar,
+                    ThisItem
+                );
+            PressedFill: =Color.Transparent
+            Size: =24
+            Text: =""
+            Width: =172
+            ZIndex: =8
+
+    ConfirmOrder_1 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(os = "New",DisplayMode.Edit,DisplayMode.Disabled)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                varCurrentStatus,
+                LookUp(
+                    StoreOnlineOrders,
+                    WebOrderID = GalleryVar.WebOrderID && Ext1OrderID = GalleryVar.Ext1OrderID,
+                    OrderStatus
+                )
+            );
+            If(
+                varCurrentStatus = "New" || varCurrentStatus = "NEW",
+                Set(
+                    ItemStatus,
+                    "Shipped"
+                );
+                
+            //replace & with &amp; in Custome Name
+            If(
+                    "&" in GalleryWebOrder.Selected.CustomerFullName,
+                    Set(
+                        FullName,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.CustomerFullName),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        FullName,
+                        Text(GalleryWebOrder.Selected.CustomerFullName)
+                    )
+                );
+                
+            //replace & with &amp; in Delivery Address1
+            If(
+                    "&" in GalleryWebOrder.Selected.DeliveryAddress1,
+                    Set(
+                        Address,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.DeliveryAddress1),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        Address,
+                        Text(GalleryWebOrder.Selected.DeliveryAddress1)
+                    )
+                );
+                
+            //replace & with &amp; in Delivery Address2
+            If(
+                    "&" in GalleryWebOrder.Selected.DeliveryAddress2,
+                    Set(
+                        Address2,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.DeliveryAddress2),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        Address2,
+                        Text(GalleryWebOrder.Selected.DeliveryAddress2)
+                    )
+                );
+                
+            //replace ' with &apos; in Customer Name
+            If(
+                    "'" in FullName,
+                    Set(
+                        FullName,
+                        Substitute(
+                            FullName,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        FullName,
+                        FullName
+                    )
+                );
+                
+            //replace ' with &apos; in Delivery Address1
+            If(
+                    "'" in Address,
+                    Set(
+                        Address,
+                        Substitute(
+                            Address,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        Address,
+                        Address
+                    )
+                );
+                
+            //replace ' with &apos; in Delivery Address2
+            If(
+                    "'" in Address2,
+                    Set(
+                        Address2,
+                        Substitute(
+                            Address2,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        Address2,
+                        Address2
+                    )
+                );
+                
+            //Replace ' with &apos; in ATL Instructions
+            If(
+                    "'" in GalleryWebOrder.Selected.ATLInstructions,
+                    Set(
+                        varATLINstructions,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.ATLInstructions),
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        varATLINstructions,
+                        Text(GalleryWebOrder.Selected.ATLInstructions)
+                    )
+                );
+                If(
+                    "&" in varATLINstructions,
+                    Set(
+                        varATLINstructions,
+                        Substitute(
+                            varATLINstructions,
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        varATLINstructions,
+                        varATLINstructions
+                    )
+                );
+                
+            //Check if Email Is Blank
+            If(
+                    IsBlank(GalleryWebOrder.Selected.EmailAddress) || IsBlank(GalleryWebOrder.Selected.MobileNumber),
+                    Set(
+                        showerrorlabel,
+                        "1"
+                    ),
+                    Navigate(
+                        OneSatchel,
+                        ScreenTransition.None
+                    )
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                ),
+                Notify("This Order has been cancelled by the Pick and Ship Admin, please click the Home icon to process the next order");
+                UpdateContext({varOrderStatusChange: true})
+            );
+            /*Set(
+                    ItemStatus,
+                    "Shipped"
+                );
+                
+            //replace & with &amp; in Custome Name
+            If(
+                    "&" in GalleryWebOrder.Selected.CustomerFullName,
+                    Set(
+                        FullName,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.CustomerFullName),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        FullName,
+                        Text(GalleryWebOrder.Selected.CustomerFullName)
+                    )
+                );
+                
+            //replace & with &amp; in Delivery Address1
+            If(
+                    "&" in GalleryWebOrder.Selected.DeliveryAddress1,
+                    Set(
+                        Address,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.DeliveryAddress1),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        Address,
+                        Text(GalleryWebOrder.Selected.DeliveryAddress1)
+                    )
+                );
+                
+            //replace & with &amp; in Delivery Address2
+            If(
+                    "&" in GalleryWebOrder.Selected.DeliveryAddress2,
+                    Set(
+                        Address2,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.DeliveryAddress2),
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                        Address2,
+                        Text(GalleryWebOrder.Selected.DeliveryAddress2)
+                    )
+                );
+                
+            //replace ' with &apos; in Customer Name
+            If(
+                    "'" in FullName,
+                    Set(
+                        FullName,
+                        Substitute(
+                            FullName,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        FullName,
+                        FullName
+                    )
+                );
+                
+            //replace ' with &apos; in Delivery Address1
+            If(
+                    "'" in Address,
+                    Set(
+                        Address,
+                        Substitute(
+                            Address,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        Address,
+                        Address
+                    )
+                );
+                
+            //replace ' with &apos; in Delivery Address2
+            If(
+                    "'" in Address2,
+                    Set(
+                        Address2,
+                        Substitute(
+                            Address2,
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                        Address2,
+                        Address2
+                    )
+                );
+                
+            //Replace ' with &apos; in ATL Instructions
+            If(
+                    "'" in GalleryWebOrder.Selected.ATLInstructions,
+                    Set(
+                        varATLINstructions,
+                        Substitute(
+                            Text(GalleryWebOrder.Selected.ATLInstructions),
+                            "'",
+                            "&apos;"
+                        )
+                    ),
+                    Set(
+                         varATLINstructions,
+                        Text(GalleryWebOrder.Selected.ATLInstructions)
+                    )
+                );
+                If(
+                    "&" in varATLINstructions,
+                    Set(
+                        varATLINstructions,
+                        Substitute(
+                            varATLINstructions,
+                            "&",
+                            "&amp;"
+                        )
+                    ),
+                    Set(
+                         varATLINstructions,
+                        varATLINstructions
+                    )
+                );
+            //Check if Email Is Blank
+            If(
+                    IsBlank(GalleryWebOrder.Selected.EmailAddress) || IsBlank(GalleryWebOrder.Selected.MobileNumber),
+                    Set(
+                        showerrorlabel,
+                        "1"
+                    ),
+                    Navigate(
+                        OneSatchel,
+                        ScreenTransition.None
+                    )
+                );
+                Set(
+                    lastActivityTime,
+                    Now()
+                )*/
+        Size: =18
+        Text: ="Confirm"
+        Visible: =os = "New"
+        Width: =204
+        X: =394
+        Y: =935
+        ZIndex: =4
+
+    RejectOder_1 As button:
+        Color: =RGBA(0, 0, 0, 1)
+        DisplayMode: =If(os = "New",DisplayMode.Edit,DisplayMode.Disabled)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        Height: =88
+        HoverFill: =ColorFade(Self.Fill, -20%)
+        OnSelect: |
+            =Set(
+                ItemStatus,
+                "Rejected"
+            );
+            Reset(RejectReasonCode);
+            Navigate(
+                RejectReason,
+                ScreenTransition.None
+            );
+            Set(
+                lastActivityTime,
+                Now()
+            );
+        Size: =18
+        Text: ="Reject"
+        Visible: =os = "New"
+        Width: =204
+        X: =40
+        Y: =935
+        ZIndex: =5
+
+    Delivery_1 As label:
+        FontWeight: =FontWeight.Bold
+        Height: =43
+        Size: =15
+        Text: ="      DELIVERY"
+        Width: =454
+        X: =186
+        Y: =466
+        ZIndex: =6
+
+    Pick_1 As label:
+        FontWeight: =FontWeight.Bold
+        Height: =43
+        Size: =15
+        Text: ="      PICK"
+        Width: =454
+        X: =186
+        Y: =186
+        ZIndex: =7
+
+    "'Pick-Form_1' As form":
+        AcceptsFocus: =false
+        BorderColor: =RGBA(255, 255, 255, 1)
+        DataSource: =StoreOnlineOrders
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =235
+        Item: =GalleryVar
+        Width: =454
+        X: =186
+        Y: =231
+        ZIndex: =8
+
+        ItemCode_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ItemCode"
+            Default: =ThisItem.ItemCode
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ItemCode"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =40
+            Required: =false
+            Width: =454
+            WidthFit: =false
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+            DataCardKey13_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Size: =15
+                Text: ="Item Code"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue13_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =34
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =3
+                ZIndex: =2
+
+        ItemBrand_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ItemBrand"
+            Default: =ThisItem.ItemBrand
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ItemBrand"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =1
+            ZIndex: =1
+
+            DataCardKey14_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Size: =15
+                Text: ="Brand"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue14_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =35
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =(Parent.Width - 60) * 0.6
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+        ItemStyle_DataCard2_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ItemStyle"
+            Default: =ThisItem.ItemStyle
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ItemStyle"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =2
+            ZIndex: =1
+
+            DataCardKey29_1 As label:
+                Align: =Align.Right
+                Color: =RGBA(0, 0, 0, 1)
+                Height: =37
+                Size: =15
+                Text: ="Style"
+                Width: =130
+                Wrap: =false
+                X: =20
+                Y: =1
+                ZIndex: =1
+
+            DataCardValue29_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =33
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+        ItemName_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ItemName"
+            Default: =ThisItem.ItemName
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ItemName"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =67
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =3
+            ZIndex: =1
+
+            DataCardKey15_1 As label:
+                Align: =Align.Right
+                Color: =RGBA(0, 0, 0, 1)
+                Height: =60
+                Size: =15
+                Text: ="Description"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue15_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =57
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =3
+                ZIndex: =2
+
+        QuantityOrdered_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="QuantityOrdered"
+            Default: =ThisItem.QuantityOrdered
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="QuantityOrdered"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =4
+            ZIndex: =1
+
+            DataCardKey17_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Height: =48
+                Size: =15
+                Text: ="Quantity"
+                Width: =130
+                Wrap: =false
+                X: =20
+                Y: =6
+                ZIndex: =1
+
+            DataCardValue17_1 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =(Parent.Width - 60) * 0.6
+                X: =175
+                Y: =12
+                ZIndex: =2
+
+    DeliveryForm_1 As form:
+        AcceptsFocus: =false
+        BorderColor: =RGBA(0, 0, 0, 0)
+        DataSource: =StoreOnlineOrders
+        Fill: =RGBA(255, 255, 255, 1)
+        Height: =404
+        Item: =GalleryVar
+        Width: =454
+        X: =186
+        Y: =512
+        ZIndex: =9
+
+        WebOrderID_DataCard3_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="WebOrderID"
+            Default: =ThisItem.WebOrderID
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="WebOrderID"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =0
+            ZIndex: =1
+
+            DataCardKey18_1 As label:
+                Align: =Align.Right
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =37
+                Size: =15
+                Text: ="Order ID"
+                Width: =130
+                Wrap: =false
+                X: =20
+                Y: =5
+                ZIndex: =1
+
+            DataCardValue18_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =30
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =12
+                ZIndex: =2
+
+        DeliveryAddress1_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="DeliveryAddress1"
+            Default: =ThisItem.DeliveryAddress1
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="DeliveryAddress1"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =63
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =1
+            ZIndex: =1
+
+            DataCardKey19_1 As label:
+                Align: =Align.Right
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =37
+                Size: =15
+                Text: ="Address"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue19_1 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =32
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Upper(Parent.Default)
+                Width: =279
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+        DeliveryAddressSuburb_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="DeliveryAddressSuburb"
+            Default: =ThisItem.DeliveryAddressSuburb
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="DeliveryAddressSuburb"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =33
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =2
+            ZIndex: =1
+
+            DataCardKey21_1 As label:
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Height: =48
+                Size: =15
+                Text: =""
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                Y: =3
+                ZIndex: =1
+
+            DataCardValue21_1 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =29
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =270
+                X: =175
+                ZIndex: =2
+
+        DeliveryAddressState_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="DeliveryAddressState"
+            Default: =ThisItem.DeliveryAddressState
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="DeliveryAddressState"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =33
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =3
+            ZIndex: =1
+
+            DataCardKey22_1 As label:
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Height: =48
+                Size: =15
+                Text: =""
+                Width: =(Parent.Width - 60) * 0.4
+                Wrap: =false
+                Y: =3
+                ZIndex: =1
+
+            DataCardValue22_2 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =29
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Concatenate(GalleryVar.DeliveryAddressState," - ")
+                Width: =66
+                X: =175
+                ZIndex: =2
+
+            DataCardValue22_3 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =37
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =GalleryVar.DeliveryAddressPostcode
+                Width: =60
+                X: =241
+                ZIndex: =3
+
+        EmailAddress_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="EmailAddress"
+            Default: =ThisItem.EmailAddress
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="EmailAddress"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =57
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =4
+            ZIndex: =1
+
+            DataCardKey24_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =48
+                Size: =15
+                Text: ="Email"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue24_1 As label:
+                BorderColor: =RGBA(0, 0, 0, 0)
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =47
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Upper(Parent.Default)
+                VerticalAlign: =VerticalAlign.Top
+                Width: =261
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+        MobileNumber_DataCard1_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="MobileNumber"
+            Default: =ThisItem.MobileNumber
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="MobileNumber"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =true
+            Width: =454
+            X: =0
+            Y: =5
+            ZIndex: =1
+
+            DataCardKey25_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =48
+                Size: =15
+                Text: ="Telephone"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue25_1 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =29
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+        ATL_DataCard2_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ATL"
+            Default: =ThisItem.ATL
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ATL"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =37
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =6
+            ZIndex: =1
+
+            DataCardKey26_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =48
+                Size: =15
+                Text: |-
+                    ="Authority
+                    To Leave"
+                Width: =130
+                Wrap: =false
+                X: =20
+                ZIndex: =1
+
+            DataCardValue26_1 As label:
+                AutoHeight: =true
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Visible: =false
+                Width: =255
+                X: =267
+                Y: =5
+                ZIndex: =2
+
+            Label26_1 As label:
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =56
+                Size: =15
+                Text: =If(ThisItem.ATL = "0","NO","YES")
+                Width: =149
+                X: =175
+                ZIndex: =3
+
+        ATLInstructions_DataCard2_1 As typedDataCard.textualViewCard:
+            BorderStyle: =BorderStyle.Solid
+            DataField: ="ATLInstructions"
+            Default: =ThisItem.ATLInstructions
+            DisplayMode: =DisplayMode.View
+            DisplayName: ="ATLInstructions"
+            Fill: =RGBA(0, 0, 0, 0)
+            Height: =61
+            Required: =false
+            Width: =454
+            X: =0
+            Y: =7
+            ZIndex: =1
+
+            DataCardKey27_1 As label:
+                Align: =Align.Right
+                AutoHeight: =true
+                Color: =RGBA(0, 0, 0, 1)
+                Font: =Font.Arial
+                Height: =58
+                Size: =15
+                Text: |-
+                    ="Delivery
+                    Instructions"
+                Width: =130
+                X: =20
+                ZIndex: =1
+
+            DataCardValue27_1 As label:
+                DisplayMode: =Parent.DisplayMode
+                Font: =Font.Arial
+                FontWeight: =FontWeight.Bold
+                Height: =53
+                PaddingLeft: =0
+                PaddingRight: =0
+                PaddingTop: =0
+                Size: =15
+                Text: =Parent.Default
+                Width: =279
+                X: =175
+                Y: =5
+                ZIndex: =2
+
+    RejectedLabel_3 As label:
+        Align: =Align.Center
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =90
+        Size: =20
+        Text: =
+        Visible: =os = "Rejected"
+        Width: =640
+        Y: =935
+        ZIndex: =10
+
+    RejectedLabel3_2 As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =49
+        Size: =15
+        Text: ="Rejected"
+        Visible: =os = "Rejected"
+        Width: =640
+        Y: =935
+        ZIndex: =11
+
+    RejectReasonText_1 As label:
+        Align: =Align.Center
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =49
+        Size: =15
+        Text: =OrderList.Selected.RejectReason
+        Visible: =os = "Rejected"
+        Width: =640
+        Y: =976
+        ZIndex: =12
+
+    Shippedabel_4 As label:
+        Align: =Align.Center
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Fill: =RGBA(148,196,117,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =90
+        Size: =20
+        Text: =
+        Visible: =os = "Shipped"
+        Width: =640
+        Y: =935
+        ZIndex: =13
+
+    Shippedconnote1_1 As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =49
+        Size: =15
+        Text: =OrderList.Selected.ConsignmentNote
+        Visible: =os = "Shipped"
+        Width: =640
+        Y: =974
+        ZIndex: =14
+
+    RejectedLabel3_3 As label:
+        Align: =Align.Center
+        BorderColor: =RGBA(0, 0, 0, 0)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =49
+        Size: =15
+        Text: ="Shipped"
+        Visible: =os = "Shipped"
+        Width: =640
+        Y: =935
+        ZIndex: =15
+
+    ReminderLabel_3 As label:
+        Align: =Align.Center
+        Fill: =RGBA(239,103,63,100%)
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =138
+        Size: =20
+        Text: ="Invalid Contact Information."
+        Visible: =showerrorlabel = "1"
+        Width: =640
+        Y: =302
+        ZIndex: =17
+
+    OrderStatusChange_5 As groupContainer.manualLayoutContainer:
+        Fill: =RGBA(255, 255, 255, 0.69)
+        Height: =956
+        Visible: |
+            =varOrderStatusChange
+        Width: =640
+        Y: =100
+        ZIndex: =18
+
+        Label8_5 As label:
+            Align: =Align.Center
+            Fill: =RGBA(211, 236, 239, 1)
+            Font: =Font.Arial
+            FontWeight: =FontWeight.Bold
+            Height: =427
+            Size: =21
+            Text: |-
+                ="This Order has been changed by the Pick and Ship Administrator
+                
+                Please click the Home icon to process the next order"
+            Width: =560
+            X: =40
+            Y: =150
+            ZIndex: =1
+
+        Icon5_32 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(0, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Home
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =484
+            ZIndex: =2
+
+        Icon5_30 As icon.Home:
+            BorderColor: =RGBA(255, 255, 255, 1)
+            BorderStyle: =BorderStyle.None
+            Color: =RGBA(184, 0, 0, 1)
+            Height: =49
+            HoverBorderColor: =Color.Black
+            Icon: =Icon.Warning
+            OnSelect: =Set(os,"New");Navigate(Home,ScreenTransition.None);Set(lastActivityTime, Now());Reset(OrderList);
+            TabIndex: =1
+            Width: =51
+            X: =294
+            Y: =198
+            ZIndex: =3
+
+    Timer2_9 As timer:
+        AutoStart: =true
+        Color: =Color.Black
+        Duration: =100
+        Fill: =RGBA(211,236,239,100%)
+        Height: =48
+        OnTimerEnd: =Set(GalleryVar,GalleryWebOrder.Selected)
+        Repeat: =true
+        Start: =true
+        Visible: =false
+        Width: =84
+        X: =556
+        Y: =139
+        ZIndex: =19
+
+    Timer2_16 As timer:
+        AutoStart: =true
+        Color: =Color.Black
+        Duration: =If(IsBlank(screentime),600000,screentime)
+        Fill: =RGBA(211,236,239,100%)
+        Height: =48
+        OnTimerEnd: |-
+            =If(
+                DateDiff(
+                    lastActivityTime,
+                    Now(),
+                    TimeUnit.Milliseconds
+                ) > Value(
+                    If(
+                        IsBlank(screentime),
+                        600000,
+                        screentime
+                    )
+                ) - 10000,
+                Navigate(
+                    Login,
+                    ScreenTransition.None
+                ),
+                false
+            )
+        Repeat: =true
+        Start: =true
+        Visible: =false
+        Width: =84
+        X: =556
+        Y: =159
+        ZIndex: =20
+

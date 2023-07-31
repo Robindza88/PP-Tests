@@ -1,0 +1,73 @@
+"'Background-Screen1' As CanvasComponent":
+    Fill: =RGBA(0, 0, 0, 0)
+    Height: =1136
+    HomeScreenNav: =App.ActiveScreen
+    LoginScreenNav: =App.ActiveScreen
+    Width: =640
+    X: =0
+    Y: =0
+    ZIndex: =1
+
+    Label4_2 As label:
+        Height: =100
+        Size: =21
+        Text: =
+        Width: =640
+        ZIndex: =1
+
+    Label9_2 As label:
+        Fill: =RGBA(211,236,239,1)
+        Height: =1036
+        Size: =21
+        Text: =
+        Width: =640
+        Y: =100
+        ZIndex: =3
+
+    Label12_4 As label:
+        Fill: =RGBA(255, 255, 255, 1)
+        Font: =Font.Arial
+        Height: =80
+        Size: =21
+        Text: =
+        Width: =640
+        Y: =1056
+        ZIndex: =4
+
+    Label25_3 As label:
+        Align: =Align.Center
+        Height: =80
+        Size: =18
+        Text: =User().FullName
+        Width: =640
+        Y: =1056
+        ZIndex: =5
+
+    HamMenu_4 As icon.Hamburger:
+        BorderColor: =RGBA(0, 0, 0, 1)
+        Color: =RGBA(0, 0, 0, 1)
+        Height: =55
+        Icon: =Icon.Hamburger
+        Visible: =false
+        X: =549
+        Y: =112
+        ZIndex: =7
+
+    Image3_2 As image:
+        Image: =Munro2
+        Width: =258
+        X: =26
+        ZIndex: =9
+
+    Label7_1 As label:
+        Align: =Align.Center
+        Font: =Font.Arial
+        FontWeight: =FontWeight.Bold
+        Height: =70
+        Size: =25
+        Text: ="PICK AND SHIP V3"
+        Width: =309
+        X: =304
+        Y: =15
+        ZIndex: =10
+

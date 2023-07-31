@@ -1,0 +1,10 @@
+[
+  {
+    "ApiId": "/providers/microsoft.powerapps/apis/shared_logicflows",
+    "FlowNameId": "3d9fdabf-0ad6-4407-8da0-5e88b49678c1",
+    "Name": "PickandShip-OnefloAPI-v3-3",
+    "ServiceKind": "ConnectedWadl",
+    "Type": "ServiceInfo",
+    "WorkflowEntityId": "8ac0e14e-241a-ee11-8f6c-000d3a7a0009"
+  }
+]
